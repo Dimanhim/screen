@@ -114,3 +114,19 @@ button.btn-link:hover {
     top: 25px;*/
 
 }
+.help-block {
+    color: red;
+}
+div.required label.form-label:after {
+    content: " *";
+    color: red;
+}
+.accesses-list ul li {
+    list-style: none;
+}
+.form-group button {
+    margin-top: 15px;
+}
+.accesses-type-list li {
+    list-style: none;
+}

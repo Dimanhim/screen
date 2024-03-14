@@ -35,7 +35,7 @@ class Cabinet extends BaseModel
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name'], 'required', 'message' => 'Необходимо заполнить поле'],
             [['number', 'name', 'mis_id'], 'string', 'max' => 255],
         ];
     }

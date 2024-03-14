@@ -9,5 +9,11 @@ return [
         'cache' => [
             'class' => \yii\caching\FileCache::class,
         ],
+        'accesses' => [
+            'class' => 'common\components\AccessesComponent',
+        ],
+        'infoLog' => [
+            'class' => 'common\components\InfoLog',
+        ],
     ],
 ];

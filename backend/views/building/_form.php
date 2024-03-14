@@ -18,14 +18,11 @@ use yii\widgets\ActiveForm;
                     Основная информация
                 </div>
                 <div class="card-body">
-                    <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-                    <?= $form->field($model, 'mis_id')->textInput() ?>
                 </div>
             </div>
         </div>
     </div>
-
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>

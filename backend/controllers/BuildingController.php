@@ -2,10 +2,10 @@
 
 namespace backend\controllers;
 
+use backend\models\BuildingSearch;
+use common\models\Building;
 use himiklab\sortablegrid\SortableGridAction;
 use Yii;
-use common\models\Cabinet;
-use backend\models\CabinetSearch;
 use yii\base\Model;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -14,7 +14,7 @@ use yii\filters\VerbFilter;
 /**
  * CabinetController implements the CRUD actions for Cabinet model.
  */
-class CabinetController extends BaseController
+class BuildingController extends BaseController
 {
     /**
      * {@inheritdoc}
@@ -24,7 +24,7 @@ class CabinetController extends BaseController
         return array_merge(
             parent::behaviors(),
             [
-                'className' => Cabinet::className(),
+                'className' => Building::className(),
             ]
         );
     }
@@ -35,7 +35,7 @@ class CabinetController extends BaseController
      */
     public function actionIndex()
     {
-        $searchModel = new CabinetSearch();
+        $searchModel = new BuildingSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -64,10 +64,10 @@ class CabinetController extends BaseController
      */
     public function actionCreate()
     {
-        $model = new Cabinet();
+        $model = new Building();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -87,7 +87,7 @@ class CabinetController extends BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [

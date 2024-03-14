@@ -26,7 +26,7 @@ class m130524_201442_init extends Migration
 
             'status' => $this->smallInteger()->notNull()->defaultValue(10),
 
-            'is_active' => $this->smallInteger(),
+            'is_active' => $this->smallInteger()->defaultValue(1),
             'deleted' => $this->smallInteger(),
             'position' => $this->integer(),
             'created_at' => $this->integer()->notNull(),

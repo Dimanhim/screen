@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\AccessesComponent;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -29,6 +30,9 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
 
+    public $sections_accesses;
+    public $password_repeat;
+
 
     /**
      * {@inheritdoc}
@@ -36,6 +40,46 @@ class User extends ActiveRecord implements IdentityInterface
     public static function tableName()
     {
         return '{{%user}}';
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->handleAccesses();
+        return parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function handleAccesses()
+    {
+        UserAccess::deleteAll(['user_id' => $this->id]);
+        if($this->sections_accesses) {
+            foreach($this->sections_accesses as $access_type => $access_values) {
+                if(is_array($access_values)) {
+                    foreach($access_values as $access_value) {
+                        $userAccess = new UserAccess();
+                        $userAccess->user_id = $this->id;
+                        $userAccess->access_type = $access_type;
+                        $userAccess->building_id = $access_value;
+                        $userAccess->save();
+                    }
+                }
+                else {
+                    $userAccess = new UserAccess();
+                    $userAccess->user_id = $this->id;
+                    $userAccess->access_type = $access_type;
+                    $userAccess->save();
+                }
+
+
+            }
+        }
+    }
+
+    public function afterFind()
+    {
+        if($this->password) {
+            $this->password_repeat = $this->password;
+        }
+        return parent::afterFind();
     }
 
     /**
@@ -54,9 +98,64 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            [['name', 'username', 'password', 'password_repeat'], 'required'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            [['is_admin'], 'integer'],
+            [['sections_accesses', 'password_repeat'], 'safe'],
+            ['password_repeat', 'passwordRepeatValidator']
         ];
+    }
+
+    public function attributeLabels()
+    {
+        return array_merge(parent::attributeLabels(), [
+            'name' => 'Имя',
+            'username' => 'Логин',
+            'password' => 'Пароль',
+            'password_repeat' => 'Пароль еще раз',
+            'sections_accesses' => 'Доступы к разделам',
+        ]);
+    }
+
+    public function passwordRepeatValidator($attribute, $params)
+    {
+        if($this->password != $this->password_repeat) {
+            $this->addError($attribute, 'Пароли не совпадают');
+        }
+    }
+
+    public function getAccesses()
+    {
+        return $this->hasMany(UserAccess::className(), ['user_id' => 'id']);
+    }
+    public function getAccessesList()
+    {
+        $list = [];
+        if($this->accesses) {
+            foreach($this->accesses as $access) {
+                if($access->building_id) {
+                    $list[$access->access_type][] = $access->building_id;
+                }
+                else {
+                    $list[$access->access_type] = $access->building_id;
+                }
+            }
+        }
+        return $list;
+    }
+
+    public function getGeneralAccessesHtml()
+    {
+        $str = '';
+        if($list = $this->accessesList) {
+            $str .= '<ul class="accesses-type-list">';
+            foreach($list as $accessName => $accessValues) {
+                $str .= '<li>'.AccessesComponent::typeName($accessName).'</li>';
+            }
+            $str .= '</ul>';
+        }
+        return $str;
     }
 
     /**
@@ -209,5 +308,13 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public static function isAdmin()
+    {
+        if($user = self::findIdentity(Yii::$app->user->id)) {
+            return $user->is_admin;
+        }
+        return false;
     }
 }

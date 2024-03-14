@@ -10,6 +10,8 @@ use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 use yii\helpers\Html as Helper;
+use common\models\User;
+use common\components\AccessesComponent;
 
 AppAsset::register($this);
 ?>
@@ -36,9 +38,20 @@ AppAsset::register($this);
         ],
     ]);
 
-    $menuItems = [
-        ['label' => 'Главная', 'url' => ['/site/index']],
-    ];
+    $menuItems = [];
+    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_USERS) or User::isAdmin()) {
+        $menuItems[] = ['label' => 'Пользователи', 'url' => ['/user/index']];
+    }
+    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_BUILDING)) {
+        $menuItems[] = ['label' => 'Корпуса', 'url' => ['/building/index']];
+    }
+    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_CABINET, null, null, true)) {
+        $menuItems[] = ['label' => 'Кабинеты', 'url' => ['/cabinet/index']];
+    }
+    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_TICKETS, null, null, true)) {
+        $menuItems[] = ['label' => 'Талоны', 'url' => ['/ticket/index']];
+    }
+
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     }

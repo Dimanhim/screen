@@ -2,41 +2,39 @@
 
 namespace backend\controllers;
 
-use himiklab\sortablegrid\SortableGridAction;
-use Yii;
-use common\models\Cabinet;
-use backend\models\CabinetSearch;
-use yii\base\Model;
+use common\models\User;
+use backend\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * CabinetController implements the CRUD actions for Cabinet model.
+ * UserController implements the CRUD actions for User model.
  */
-class CabinetController extends BaseController
+class UserController extends BaseController
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function behaviors()
     {
         return array_merge(
             parent::behaviors(),
             [
-                'className' => Cabinet::className(),
+                'className' => User::className(),
             ]
         );
     }
 
     /**
-     * Lists all Cabinet models.
-     * @return mixed
+     * Lists all User models.
+     *
+     * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new CabinetSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel = new UserSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -45,9 +43,9 @@ class CabinetController extends BaseController
     }
 
     /**
-     * Displays a single Cabinet model.
-     * @param integer $id
-     * @return mixed
+     * Displays a single User model.
+     * @param int $id
+     * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
@@ -58,16 +56,20 @@ class CabinetController extends BaseController
     }
 
     /**
-     * Creates a new Cabinet model.
+     * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
+     * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Cabinet();
+        $model = new User();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(['index']);
+            }
+        } else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('create', [
@@ -76,18 +78,20 @@ class CabinetController extends BaseController
     }
 
     /**
-     * Updates an existing Cabinet model.
+     * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
+     * @param int $id
+     * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            if($model->validate() and $model->save()) {
+                return $this->redirect(['update', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [

@@ -19,6 +19,7 @@ class m200313_144408_add_user extends Migration
             'password_hash' => '$2y$13$1fnAOhEBVzCcOfl3n2QXaO4ai1dQyK2eOUL4CcOc9c5sdkEYe9X.O',
             'email' => 'dimanhim@list.ru',
             'status' => '10',
+            'is_admin' => '1',
             'created_at' => time(),
             'updated_at' => time()
         ]);

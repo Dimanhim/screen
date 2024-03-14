@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\components\AccessesComponent;
 use common\components\CabinetComponent;
 use common\models\Cabinet;
 use himiklab\thumbnail\EasyThumbnail;
@@ -20,7 +21,7 @@ use himiklab\sortablegrid\SortableGridAction;
 */
 class BaseController extends Controller
 {
-    public $cabinet;
+
     /**
      * @param $action
      * @return bool
@@ -28,7 +29,6 @@ class BaseController extends Controller
      */
     public function beforeAction($action)
     {
-        $this->cabinet = new CabinetComponent();
         return parent::beforeAction($action);
     }
     /**
@@ -94,7 +94,7 @@ class BaseController extends Controller
     public function findModel($id)
     {
         if(array_key_exists('className', $this->behaviors()) && ($model = $this->getModel())) {
-            if(($findModel = $model::findOne(['id' => $id])) !== null) {
+            if(($findModel = $model::findOne(['id' => $id, 'is_active' => 1, 'deleted' => null])) !== null) {
                 return $findModel;
             }
         }

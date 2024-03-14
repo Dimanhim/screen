@@ -56,4 +56,12 @@ class BaseModel extends ActiveRecord
         }
         return parent::beforeSave($insert);
     }
+
+    /**
+     * @return mixed
+     */
+    public static function findModels()
+    {
+        return self::className()::find()->where(['is', 'deleted', null])->andWhere(['is_active' => 1])->orderBy(['position' => 'SORT ASC']);
+    }
 }
