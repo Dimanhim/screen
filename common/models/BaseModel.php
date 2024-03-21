@@ -8,6 +8,15 @@ use himiklab\sortablegrid\SortableGridBehavior;
 
 class BaseModel extends ActiveRecord
 {
+    public $_today_start;
+    public $_today_end;
+
+    public function init()
+    {
+        $this->_today_start = date('d.m.Y') . ' 00:00';
+        $this->_today_end   = date('d.m.Y') . ' 23:59';
+        parent::init();
+    }
     /**
      * @return array
      */

@@ -18,7 +18,7 @@ class CabinetSearch extends Cabinet
     {
         return [
             [['id', 'mis_id', 'is_active', 'deleted', 'position', 'created_at', 'updated_at'], 'integer'],
-            [['unique_id', 'number', 'name'], 'safe'],
+            [['unique_id', 'number', 'name', 'clinic_id'], 'safe'],
         ];
     }
 
@@ -60,6 +60,7 @@ class CabinetSearch extends Cabinet
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'clinic_id' => $this->clinic_id,
             'mis_id' => $this->mis_id,
             'is_active' => $this->is_active,
             'deleted' => $this->deleted,

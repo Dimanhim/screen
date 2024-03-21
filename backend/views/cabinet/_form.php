@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\Cabinet;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Cabinet */
@@ -20,6 +21,7 @@ use yii\widgets\ActiveForm;
                 <div class="card-body">
                     <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'clinic_id')->dropDownList($model->clinicList(), ['prompt' => '[Не выбрано]']) ?>
                     <?= $form->field($model, 'mis_id')->textInput() ?>
                 </div>
             </div>

@@ -27,7 +27,7 @@ AppAsset::register($this);
 </head>
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
-
+<div class="loader-block"></div>
 <header>
     <?php
     NavBar::begin([
@@ -42,9 +42,9 @@ AppAsset::register($this);
     if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_USERS) or User::isAdmin()) {
         $menuItems[] = ['label' => 'Пользователи', 'url' => ['/user/index']];
     }
-    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_BUILDING)) {
+    /*if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_BUILDING)) {
         $menuItems[] = ['label' => 'Корпуса', 'url' => ['/building/index']];
-    }
+    }*/
     if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_CABINET, null, null, true)) {
         $menuItems[] = ['label' => 'Кабинеты', 'url' => ['/cabinet/index']];
     }
@@ -85,10 +85,12 @@ AppAsset::register($this);
     </div>
 </main>
 
+<?= $this->render('//layouts/blocks/alert_modal') ?>
+
 <footer class="footer mt-auto py-3 text-muted">
     <div class="container">
         <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end"><?= Yii::powered() ?></p>
+        <p class="float-end"></p>
     </div>
 </footer>
 

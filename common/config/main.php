@@ -15,5 +15,8 @@ return [
         'infoLog' => [
             'class' => 'common\components\InfoLog',
         ],
+        'api' => [
+            'class' => 'common\components\Api',
+        ],
     ],
 ];

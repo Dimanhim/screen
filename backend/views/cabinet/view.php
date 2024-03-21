@@ -30,6 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'number',
+            [
+                'attribute' => 'clinic_id',
+                'value' => function($data) {
+                    return $data->clinicName;
+                }
+            ],
             'name',
             'mis_id',
         ],

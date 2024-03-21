@@ -3,7 +3,6 @@
 namespace backend\controllers;
 
 use common\components\AccessesComponent;
-use common\components\CabinetComponent;
 use common\models\Cabinet;
 use himiklab\thumbnail\EasyThumbnail;
 use himiklab\thumbnail\EasyThumbnailImage;

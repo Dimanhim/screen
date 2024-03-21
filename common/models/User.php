@@ -58,7 +58,7 @@ class User extends ActiveRecord implements IdentityInterface
                         $userAccess = new UserAccess();
                         $userAccess->user_id = $this->id;
                         $userAccess->access_type = $access_type;
-                        $userAccess->building_id = $access_value;
+                        $userAccess->clinic_id = $access_value;
                         $userAccess->save();
                     }
                 }
@@ -99,6 +99,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['name', 'username', 'password', 'password_repeat'], 'required'],
+            [['username'], 'unique', 'message' => 'Пользователь с таким логином уже зарегистрирован'],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             [['is_admin'], 'integer'],
@@ -134,11 +135,11 @@ class User extends ActiveRecord implements IdentityInterface
         $list = [];
         if($this->accesses) {
             foreach($this->accesses as $access) {
-                if($access->building_id) {
-                    $list[$access->access_type][] = $access->building_id;
+                if($access->clinic_id) {
+                    $list[$access->access_type][] = $access->clinic_id;
                 }
                 else {
-                    $list[$access->access_type] = $access->building_id;
+                    $list[$access->access_type] = $access->clinic_id;
                 }
             }
         }

@@ -36,6 +36,7 @@ class AppAsset extends AssetBundle
     public static function getJs()
     {
         return [
+            //'js/bootstrap.min.js',
             'js/slugify.js',
             'js/functions.js?v='.mt_rand(1000,10000),
             'js/common.js?v='.mt_rand(1000,10000),

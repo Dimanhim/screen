@@ -33,7 +33,7 @@ class UserAccess extends BaseModel
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['user_id', 'building_id'], 'integer'],
+            [['user_id', 'clinic_id'], 'integer'],
             [['access_type'], 'string', 'max' => 255],
         ]);
     }
@@ -45,7 +45,7 @@ class UserAccess extends BaseModel
     {
         return array_merge(parent::attributeLabels(), [
             'user_id' => 'User ID',
-            'building_id' => 'Building ID',
+            'clinic_id' => 'Clinic ID',
         ]);
     }
 

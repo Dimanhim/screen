@@ -4,22 +4,25 @@ use yii\db\Migration;
 use yii\db\Schema;
 
 /**
- * Class m240314_110602_user_accesses
+ * Class m240319_064913_tickets
  */
-class m240314_110602_user_accesses extends Migration
+class m240319_064913_tickets extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('{{%user_accesses}}', [
+        $this->createTable('{{%tickets}}', [
             'id'                    => Schema::TYPE_PK,
             'unique_id'             => Schema::TYPE_STRING . ' NOT NULL',
 
-            'user_id'               => Schema::TYPE_INTEGER,
-            'access_type'           => Schema::TYPE_STRING,
             'clinic_id'             => Schema::TYPE_INTEGER,
+            'mis_id'                => Schema::TYPE_STRING,
+            'time_start'            => Schema::TYPE_INTEGER,
+            'patient_name'          => Schema::TYPE_STRING,
+            'appointment_id'        => Schema::TYPE_INTEGER,
+            'ticket'                => Schema::TYPE_STRING,
 
             'is_active'             => Schema::TYPE_SMALLINT,
             'deleted'               => Schema::TYPE_SMALLINT,
@@ -34,6 +37,6 @@ class m240314_110602_user_accesses extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%user_accesses}}');
+        $this->dropTable('{{%tickets}}');
     }
 }

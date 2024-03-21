@@ -31,6 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'number',
+            [
+                'attribute' => 'clinic_id',
+                'value' => function($data) {
+                    return $data->clinicName;
+                },
+                'filter' => $searchModel->clinicList()
+            ],
             'name',
             'mis_id',
             [
@@ -38,7 +45,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{view} {update} {delete}',
                 'buttons' => [
                     'view' => function($url, $model) {
-                        return Html::a(Cabinet::getViewSvg(), ['../cabinet/'.$model->id], ['target' => '_blanc']);
+                        return Html::a(Cabinet::getViewSvg(), ['../cabinet/'.$model->id],
+                            [
+                                'target' => '_blanc',
+                                'disabled' => true,
+                                'class' => 'cabinet-view-tooltip',
+                                'title' => $model->tooltipText()
+
+                            ]
+                        );
+                    },
+                    'delete' => function($url, $model) {
+                        return Html::a(Cabinet::getDeleteSvg(), ['cabinet/delete', 'id' => $model->id],
+                            [
+                                'target' => '_blanc',
+                                'class' => 'alert-modal',
+                                'data-confirm-subject' => 'кабинет "'.$model->name.'"',
+                            ]
+                        );
                     }
                 ],
             ],

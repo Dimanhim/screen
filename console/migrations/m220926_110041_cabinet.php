@@ -20,6 +20,7 @@ class m220926_110041_cabinet extends Migration
             'number'                => Schema::TYPE_STRING,
             'name'                  => Schema::TYPE_STRING . ' NOT NULL',
             'mis_id'                => Schema::TYPE_STRING,
+            'clinic_id'             => Schema::TYPE_INTEGER,
 
             'is_active'             => Schema::TYPE_SMALLINT,
             'deleted'               => Schema::TYPE_SMALLINT,
