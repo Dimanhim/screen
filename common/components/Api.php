@@ -6,20 +6,11 @@ use yii\base\Model;
 
 class Api extends RnovaApi
 {
-    //private $mis_id;
     private $status_id = '1,2,3';
 
     const STATUS_ID_WRITED = 1;     // записан
     const STATUS_ID_WAIT   = 2;     // ожидает
     const STATUS_ID_BUSY   = 3;     // на приеме  upcoming
-
-
-    /**
-    Семейная клиника
-     */
-    //private $clinic_id = 290;
-    //private $clinic_id = 1188;        // с altermed
-    //private $clinic_id = 2;
 
     public function init()
     {
@@ -27,44 +18,23 @@ class Api extends RnovaApi
 
     }
 
-    public function getAppointments($params = [])
+    public function getAppointments($params = [], $statuses = true)
     {
-        /*$params = [
-            'clinic_id' => $this->clinic_id,
-            'date_from' => $this->time_start,
-            'date_to' => $this->time_end,
-            'room' => $this->mis_id,
-            'show_busy' => 1,
-            'status_id' => $this->status_id,
-        ];
-        if(!$time) {
-            unset($params['date_from']);
-            unset($params['date_to']);
-        }*/
-        $params = array_merge($params, ['status_id' => $this->status_id]);
+        if($statuses) {
+            $params = array_merge($params, ['status_id' => $statuses]);
+        }
+        $params = array_merge($params, ['status_id' => $statuses]);
         return $this->getRequest('getAppointments', $params);
     }
 
     public function getSchedule($params = [])
     {
-        /*$params = [
-            'clinic_id' => $this->clinic_id,
-            'time_start' => $this->time_start,
-            'time_end' => $this->time_end,
-            'room' => $this->mis_id,
-            'show_busy' => 1,
-        ];
-        if(!$time) {
-            unset($params['time_start']);
-            unset($params['time_end']);
-        }*/
         return $this->getRequest('getSchedule', $params);
     }
 
     public function createAppointment($params)
     {
         $data =  $this->getRequest('createAppointment', $params);
-        \Yii::$app->infoLog->add('$data', $data, 'api-appointment.txt');
         return $data;
     }
 

@@ -20,6 +20,12 @@ use himiklab\sortablegrid\SortableGridAction;
 */
 class BaseController extends Controller
 {
+    public $_errors = [];
+    public $_data = [
+        'error' => 0,
+        'message' => null,
+        'data' => [],
+    ];
 
     /**
      * @param $action
@@ -106,6 +112,24 @@ class BaseController extends Controller
         if(array_key_exists('className', $this->behaviors())) {
             return $behaviors['className'];
         }
+        return false;
+    }
+
+    public function _hasErrors()
+    {
+        return !empty($this->_errors);
+    }
+
+    public function _addError($message)
+    {
+        if($message) {
+            $this->_errors[] = $message;
+        }
+    }
+
+    public function _errorSummary()
+    {
+        if($this->_errors) return implode(' ', $this->_errors);
         return false;
     }
 

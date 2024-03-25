@@ -2,9 +2,13 @@
 
 namespace common\models;
 
+use common\components\Api;
+use common\components\ApiHelper;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\web\NotFoundHttpException;
+use common\models\Ticket;
 
 /**
  * This is the model class for table "cabinet".
@@ -22,6 +26,8 @@ use yii\helpers\Html;
  */
 class Cabinet extends BaseModel
 {
+    public $_user = null;
+
     /**
      * {@inheritdoc}
      */
@@ -120,113 +126,59 @@ class Cabinet extends BaseModel
         return $result;
     }
 
-    public static function getSchedules($schedules)
+
+
+    public function prepareJsonDataForScreen(string $today_start, string $today_end) : array
     {
-        $scheduleArray = ['buzy' => [], 'await' => []];
-        $api = new Api();
-        //$scheduleArray = [];
-        if($schedules) {
-            foreach ($schedules as $schedule) {
+        $data = [
+            'error' => null,
+            'data' => [],
+        ];
+        $params_shedule = [
+            'room' => $this->mis_id,
+            'time_start' => $today_start,
+            'time_end' => $today_end,
+            'show_busy' => 1,
+        ];
+        $params_appointments = [
+            'date_from' => $today_start,
+            'date_to' => $today_end,
+            'room' => $this->mis_id,
+            'show_busy' => 1,
+            'status_id' => Api::STATUS_ID_WAIT . ',' . Api::STATUS_ID_BUSY,
+        ];
 
-                // из ответа
-                $startTimestamp = strtotime($schedule['time_start']);
-                $endTimestamp = strtotime($schedule['time_end']);
-
-                // текущие
-                $userStartTimestamp = strtotime($api->getTimeStart());
-                $userEndTimestamp = strtotime($api->getTimeEnd());
-                $userNowTimestamp = strtotime($api->getTimeNow());
-                $userDateTimestamp = strtotime(date('d.m.Y', $userStartTimestamp));
-                //$userNowTimestamp = strtotime(date('d.m.Y', $userStartTimestamp));
-
-                $dayTimestamp = strtotime(date('d.m.Y', $startTimestamp));
-                $startStringStart = self::getTimeAsString( $startTimestamp - $dayTimestamp );
-                $startStringEnd = self::getTimeAsString( $endTimestamp - $dayTimestamp );
-
-                if(
-                    $schedule['status_id'] == Api::STATUS_ID_BUSY
-                    //$startTimestamp < $userNowTimestamp
-                    //&&
-                    //$endTimestamp > $userNowTimestamp
-                    //&&
-                    //$userDateTimestamp == $dayTimestamp
-
-                ) {
-                    $scheduleArray['buzy'][] = [
-                        'visit_id' => $schedule['id'],
-                        'time_from' => $startStringStart,
-                        'time_to' => $startStringEnd,
-                    ];
+        $schedulesData = ApiHelper::getScheduleData(Yii::$app->api->getSchedule($params_shedule));
+        $appointmentsData = ApiHelper::getDataFromApi(Yii::$app->api->getAppointments($params_appointments, false));
+        $this->setUserFromSchedules($schedulesData);
+        if(!$schedulesData) {
+            $data['error'] = 'Нет расписания для сотрудника кабинета';
+            return $data;
+        }
+        if(!$this->_user) {
+            $data['error'] = 'Доктор не найден';
+            return $data;
+        }
+        $data['data']['user'] = $this->_user;
+        if($appointmentsData) {
+            foreach($appointmentsData as $appointmentItem) {
+                if($appointmentItem['ticket'] = Ticket::ticketName($appointmentItem)) {
+                    $data['data']['appointments'][$appointmentItem['status_id']][] = $appointmentItem;
                 }
-                elseif(
-                    //$schedule['status_id'] == Api::STATUS_ID_WRITED ||
-                    $schedule['status_id'] == Api::STATUS_ID_WAIT
-                    //$startTimestamp > $userNowTimestamp
-                    //&&
-                    //$userDateTimestamp == $dayTimestamp
-                ) {
-                    $scheduleArray['await'][] = [
-                        'visit_id' => $schedule['id'],
-                        'time_from' => $startStringStart,
-                        'time_to' => $startStringEnd,
-                    ];
-                }
-
-
-
-
-                /*if($schedule['is_busy'] && $schedule['time_start_short'] && $schedule['time_end_short']) {
-                    $timeStart = self::getSecondsInTime($schedule['time_start_short']);
-                    $timeTo = self::getSecondsInTime($schedule['time_end_short']);
-
-                    $timeNow = strtotime($api->getTimeStart()) - strtotime($api->getDate());
-                    $dateNow = strtotime($api->getDate());
-                    if(
-                        $timeStart > $timeNow
-                        && $dateNow == strtotime($schedule['date'])
-                    ) {
-                        $scheduleArray['await'][] = [
-                            'visit_id' => null,
-                            'time_from' => $schedule['time_start_short'],
-                            'time_to' => $schedule['time_end_short'],
-                        ];
-                    }
-
-                    // на приеме
-                    elseif (
-                        $timeStart < $timeNow &&
-                        $timeTo > $timeNow
-                        && $dateNow == strtotime($schedule['date'])
-                    ) {
-                        $scheduleArray['buzy'][] = [
-                            'visit_id' => null,
-                            'time_from' => $schedule['time_start_short'],
-                            'time_to' => $schedule['time_end_short'],
-                        ];
-                    }
-                }*/
             }
         }
-        return $scheduleArray;
+        return $data;
     }
 
-    public static function getSecondsInTime($time)
+    public function setUserFromSchedules($schedulesData)
     {
-        $seconds = 0;
-        $arr = explode(':', $time);
-        $seconds += $arr[0] * 60 * 60;
-        $seconds += $arr[1] * 60;
-        return $seconds;
-    }
-    public static function getTimeAsString($time)
-    {
-        if($time) {
-            $hours = floor($time / 60 / 60);
-            $diff = $time - $hours * 60 * 60;
-            $minutes = floor($diff / 60);
-            return str_pad($hours, 2, 0, STR_PAD_LEFT).':'.str_pad($minutes, 2, 0, STR_PAD_LEFT);
+        if(!$schedulesData or !is_array($schedulesData)) return false;
+        $k = array_key_first($schedulesData);
+        if(isset($schedulesData[$k]) and $schedulesData[$k] and $schedulesData[$k]['user_id']) {
+            if($user = ApiHelper::getDataFromApi(Yii::$app->api->getUsers(['user_id' => $schedulesData[$k]['user_id']]))) {
+                $this->_user = $user;
+            }
         }
-        return 0;
     }
 
     public static function getViewSvg()
@@ -246,8 +198,8 @@ class Cabinet extends BaseModel
     public function tooltipText()
     {
         $str = '<div class="tooltip-view-links">';
-        $str .= '<div>'.Html::a('Кабинет врача', ['../cabinet/'.$this->id, 'type' => 'cabinet'], ['target' => '_blanc']).'</div>';
-        $str .= '<div>'.Html::a('Очередь талонов', ['../cabinet/'.$this->id, 'type' => 'ticket'], ['target' => '_blanc']).'</div>';
+        $str .= '<div>'.Html::a('Кабинет врача', ['../tablet/'.$this->id, 'type' => 'cabinet'], ['target' => '_blanc']).'</div>';
+        $str .= '<div>'.Html::a('Очередь талонов', ['../tablet/'.$this->id, 'type' => 'ticket'], ['target' => '_blanc']).'</div>';
         $str .= '</div>';
         return $str;
     }

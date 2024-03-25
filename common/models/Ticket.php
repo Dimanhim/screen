@@ -25,6 +25,8 @@ use Yii;
  */
 class Ticket extends BaseModel
 {
+    const TICKET_PAD = 3;
+
     public $response;
 
     /**
@@ -41,8 +43,8 @@ class Ticket extends BaseModel
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['clinic_id', 'appointment_id'], 'integer'],
-            [['mis_id', 'patient_name', 'ticket', 'time_start', 'time_end', 'mobile'], 'string', 'max' => 255],
+            [['clinic_id', 'appointment_id', 'time_start_ts', 'time_end_ts'], 'integer'],
+            [['mis_id', 'patient_name', 'ticket_letter', 'ticket_number', 'time_start', 'time_end', 'mobile'], 'string', 'max' => 255],
         ]);
     }
 
@@ -56,13 +58,43 @@ class Ticket extends BaseModel
             'mis_id' => '№ кабинета',
             'time_start' => 'Время начала',
             'time_end' => 'Время окончания',
+            'time_start_ts' => 'Время начала',
+            'time_end_ts' => 'Время окончания',
             'mobile' => 'Время приема',
             'patient_name' => 'Имя',
             'appointment_id' => 'ID Визита',
             'ticket' => 'Талон',
+            'ticket_letter' => 'Буква талона',
+            'ticket_number' => 'Номер талона',
         ]);
     }
 
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if($this->time_start) {
+            $this->time_start_ts = strtotime($this->time_start);
+        }
+        if($this->time_end) {
+            $this->time_end_ts = strtotime($this->time_end);
+        }
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTicket()
+    {
+        return $this->ticket_letter . $this->ticket_number;
+    }
+
+    /**
+     * @return string
+     */
     public function getAppointmentListHtml()
     {
         return Yii::$app->controller->renderPartial('//ticket/_appointment_list', [
@@ -71,6 +103,9 @@ class Ticket extends BaseModel
         ]);
     }
 
+    /**
+     * @return array|bool
+     */
     public function ticketList()
     {
         if(!$this->clinic_id and !$this->mis_id) return false;
@@ -90,9 +125,15 @@ class Ticket extends BaseModel
         ];
         $schedulesData = ApiHelper::getDataFromApi(Yii::$app->api->getSchedule($params_shedule));
         $appointmentsData = ApiHelper::getDataFromApi(Yii::$app->api->getAppointments($params_appointments));
+
         return $this->getTotalData($schedulesData, $appointmentsData);
     }
 
+    /**
+     * @param $schedulesFullData
+     * @param $appointmentsData
+     * @return array|bool
+     */
     public function getTotalData($schedulesFullData, $appointmentsData)
     {
         if(!$schedulesFullData) return false;
@@ -108,7 +149,8 @@ class Ticket extends BaseModel
                 'time_start' => Helpers::getTimeFromDatetime($scheduleItem['time_start']),
                 'patient_name' => $appointmentItem ? $appointmentItem['patient_name'] : null,
                 'visit_id' => $appointmentItem ? $appointmentItem['id'] : null,
-                'ticket' => $appointmentItem ? $this->ticketTimes($appointmentItem) : null,
+                //'ticket' => $appointmentItem ? $this->ticketTimes($appointmentItem) : null,
+                'ticket' => self::ticketName($appointmentItem),
                 'clinic_id' => $scheduleItem['clinic_id'],
                 'doctor_id' => $scheduleItem['user_id'],
                 'room' => $scheduleItem['room'],
@@ -117,6 +159,17 @@ class Ticket extends BaseModel
             ];
         }
         return $data;
+    }
+
+    public static function ticketName($appointmentItem)
+    {
+        if($appointmentItem) {
+            if($ticket = self::findOne(['appointment_id' => $appointmentItem['id']])) {
+                return $ticket->ticket;
+            }
+            return self::ticketTimes($appointmentItem);
+        }
+        return null;
     }
 
     // ЭТОТ МЕТОД НУЖНО ДОПИЛИТЬ
@@ -161,10 +214,33 @@ class Ticket extends BaseModel
         return false;
     }
 
-    public function ticketTimes($appointment)
+    /**
+     * @param $appointment
+     * @return string
+     */
+    public static function ticketTimes($appointment)
     {
         $dateFrom = Helpers::getTimeFromDatetime($appointment['time_start']);
         $dateTo = Helpers::getTimeFromDatetime($appointment['time_end']);
         return $dateFrom . ' - ' . $dateTo;
+    }
+
+    public function setTicketLetter()
+    {
+        $this->ticket_letter = 'Л';
+    }
+
+    public function setTicketNumber()
+    {
+        $today_start_ts = strtotime(date('d.m.Y'));
+        $today_end_ts = $today_start_ts + 86400 - 1;
+        $ticketsCount = self::find()->where(['ticket_letter' => $this->ticket_letter])->andWhere(['between', 'time_start_ts', $today_start_ts, $today_end_ts])->count();
+        $this->ticket_number = str_pad($ticketsCount + 1, self::TICKET_PAD, STR_PAD_LEFT, '0');
+    }
+
+    public function setTicket()
+    {
+        $this->setTicketLetter();
+        $this->setTicketNumber();
     }
 }

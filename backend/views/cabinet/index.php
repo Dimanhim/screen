@@ -29,7 +29,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            //['class' => 'yii\grid\SerialColumn'],
+            'id',
             'number',
             [
                 'attribute' => 'clinic_id',
@@ -45,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'template' => '{view} {update} {delete}',
                 'buttons' => [
                     'view' => function($url, $model) {
-                        return Html::a(Cabinet::getViewSvg(), ['../cabinet/'.$model->id],
+                        return Html::a(Cabinet::getViewSvg(), ['../room_id/'.$model->id],
                             [
                                 'target' => '_blanc',
                                 'disabled' => true,

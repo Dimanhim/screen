@@ -56,7 +56,8 @@ function submitTicketForm() {
             console.log('res data', res.data)
             if(res.result == 1 && res.data) {
                 console.log('change', res.data)
-                $('#ticketModal .modal-body').html('<h4 style="text-align: center;">Визит успешно добавлен</h4>')
+                $('#ticketModal').modal('hide');
+                $('#resultModal').modal('show');
                 showAppointmentList(res.data.clinic_id, res.data.room)
             }
             else if(res.message != null) {

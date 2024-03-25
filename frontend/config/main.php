@@ -43,7 +43,7 @@ return [
             'showScriptName' => false,
             'rules' => [
 
-                '/cabinet/<id:\d+>' => 'cabinet/view',
+                '/tablet/<id:\d+>' => 'tablet/index',
             ],
         ],
 

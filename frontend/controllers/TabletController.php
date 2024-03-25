@@ -13,6 +13,10 @@ class TabletController extends Controller
     {
         $this->layout = 'front';
 
+        if(!\Yii::$app->request->get('id')) {
+            throw new NotFoundHttpException('Запрошенная страница не существует');
+        }
+
         return $this->render('index', [
 
         ]);

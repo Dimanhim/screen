@@ -57,6 +57,7 @@ class FormTicket extends Model
         $model->mis_id = $this->room;
         $model->time_start = $this->time_start;
         $model->time_end = $this->time_end;
+        $model->setTicket();
         if($model->save()) {
             return $this->sendApiRequest($model);
         }
