@@ -16,15 +16,9 @@ use yii\helpers\Html;
     </tr>
     </thead>
     <tbody>
-    <?php if(!$list) : ?>
-        <tr>
-            <td colspan="6">Выберите кабинет</td>
-        </tr>
-    <?php else : ?>
-
+    <?php if($list) : ?>
         <?php if($ticketList = $model->ticketList()) : ?>
-
-        <?php $count = 1; foreach($ticketList as $ticketItem) : ?>
+            <?php $count = 1; foreach($ticketList as $ticketItem) : ?>
                 <tr class="ticket_row">
                     <td>
                         <div class="ticket_row_number">
@@ -49,7 +43,16 @@ use yii\helpers\Html;
                     <?php if(!$ticketItem['ticket']) : ?>
                         <td>
                             <div class="ticket_row_get_ticket">
-                                <a href="#">
+                                <a
+                                        href="#"
+                                        class="get_ticket_js"
+                                        data-doctor_id="<?= $ticketItem['doctor_id'] ?>"
+                                        data-room="<?= $ticketItem['room'] ?>"
+                                        data-clinic_id="<?= $ticketItem['clinic_id'] ?>"
+                                        data-time="<?= $ticketItem['time_start'] ?>"
+                                        data-time_start="<?= $ticketItem['mis_time_start'] ?>"
+                                        data-time_end="<?= $ticketItem['mis_time_end'] ?>"
+                                >
                                     Выдать
                                 </a>
                             </div>
@@ -67,13 +70,18 @@ use yii\helpers\Html;
                         </div>
                     </td>
                 </tr>
-        <?php $count++; endforeach; ?>
+                <?php $count++; endforeach; ?>
 
         <?php else : ?>
             <tr>
                 <td colspan="6">У выбранного кабинета нет талонов</td>
             </tr>
         <?php endif; ?>
+
+    <?php else : ?>
+        <tr>
+            <td colspan="6">Выберите кабинет</td>
+        </tr>
     <?php endif; ?>
     </tbody>
 </table>

@@ -117,7 +117,8 @@ button.btn-link:hover {
 .help-block {
     color: red;
 }
-div.required label.form-label:after {
+div.required label.form-label:after,
+div.required label.control-label:after {
     content: " *";
     color: red;
 }
@@ -401,7 +402,7 @@ END PRELOADER
 }
 /* END ALERT */
 
-#alertModal button.close {
+.screens-modal button.close {
     text-align: right;
     margin-top: 10px;
     margin-right: 10px;
@@ -415,4 +416,25 @@ END PRELOADER
 .alert-modal-body h3 {
     font-size: 1rem;
     line-height: 1.5;
+}
+.ticket-list-row {
+    display: none;
+}
+.ticket-list-row.active {
+    display: block;
+}
+.clinic_row {
+    cursor: pointer;
+}
+.info-message {
+    display: none;
+    color: #28a745;
+    height: 20px;
+    margin-bottom: 0;
+}
+.info-message.error {
+    color: #dc3545;
+}
+#form-ticket h4 {
+    text-align: center;
 }

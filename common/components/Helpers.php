@@ -11,11 +11,15 @@ class Helpers
      * @param bool $plus
      * @return mixed|string
      */
-    public static function phoneFormat($phone)
+    public static function phoneFormat($phone, $signPlus = false)
     {
         if($phone) {
             $sym = ['-', '(', ')', '_', ' '];
             $replaced = ['','','','',''];
+            if($signPlus) {
+                $sym[] = '+';
+                $replaced[] = '';
+            }
             return str_replace($sym, $replaced, $phone);
         }
         return '';
@@ -74,6 +78,12 @@ class Helpers
         return null;
     }
 
+    public static function dateTimeFormat($dateTime)
+    {
+        $timestamp = strtotime($dateTime);
+        return date('d.m.Y H:i', $timestamp);
+    }
+
     /**
      * @param $date_from
      * @param $date_to
@@ -81,6 +91,7 @@ class Helpers
      * @param bool $timestamp
      * @return bool
      */
+    //subject 12:30 date_from 12:00 date_to 12:30
     public static function isDatesBetween($date_from, $date_to, $subject, $toTimestamp = false)
     {
         $dates = [
@@ -88,6 +99,6 @@ class Helpers
             'date_to' => $toTimestamp ? strtotime($date_to) : $date_to,
             'subject' => $toTimestamp ? strtotime($subject) : $subject,
         ];
-        return $dates['subject'] >= $dates['date_from'] and $dates['subject'] <= $dates['date_to'];
+        return $dates['subject'] >= $dates['date_from'] and $dates['subject'] < $dates['date_to'];
     }
 }

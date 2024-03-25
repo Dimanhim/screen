@@ -43,6 +43,11 @@ $(document).ready(function() {
     })
     $(document).on('click', '.clinic_row', function(e) {
         e.preventDefault();
+        if($(this).hasClass('active')) {
+            $(this).removeClass('active');
+            toggleTicketRow();
+            return false;
+        }
         $('.clinic_row').removeClass('active')
         $(this).addClass('active');
         $('#appointment_list').html()
@@ -56,4 +61,23 @@ $(document).ready(function() {
         let href = $(this).attr('href')
         displayAlertModal(subject, href)
     });
+    $(document).on('click', '.get_ticket_js', function(e) {
+        e.preventDefault();
+        let self = $(this);
+        $('#formticket-time_start').val(self.attr('data-time_start'))
+        $('#formticket-time_end').val(self.attr('data-time_end'))
+        $('#formticket-room').val(self.attr('data-room'))
+        $('#formticket-clinic_id').val(self.attr('data-clinic_id'))
+        $('#formticket-doctor_id').val(self.attr('data-doctor_id'))
+        $('#room-name').html(' в кабинет <b>' + self.attr('data-room') + '</b> на время <b>' + self.attr('data-time') + '</b>')
+
+        initPlugins();
+        $('#ticketModal').modal('show')
+    });
+
+    $(document).on('click', '#form-ticket button', function(e) {
+        e.preventDefault();
+        submitTicketForm();
+    });
+
 })

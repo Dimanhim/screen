@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\FormTicket;
 use common\models\Ticket;
 use Yii;
 use yii\filters\ContentNegotiator;
@@ -12,7 +13,7 @@ use yii\web\Response;
 
 class AjaxController extends Controller
 {
-    public $res = ['result' => 0, 'message' => null, 'html' => null];
+    public $res = ['result' => 0, 'message' => null, 'html' => null, 'data' => []];
     /**
      * @return array
      */
@@ -33,7 +34,6 @@ class AjaxController extends Controller
             'clinic_id' => Yii::$app->request->post('clinic_id'),
             'mis_id' => Yii::$app->request->post('mis_id')
         ]);
-
         if($html = $model->getAppointmentListHtml()) {
             $this->res['result'] = 1;
             $this->res['html'] = $html;
@@ -42,28 +42,35 @@ class AjaxController extends Controller
         return $this->res;
     }
 
-    public function actionShowAppointment()
+    public function actionSubmitTicketForm()
     {
-        if(!$appointment_id = Yii::$app->request->post('appointment_id')) return $this->res;
-        $model = new Document(['appointment_id' => $appointment_id]);
-        $appointment = $model->getAppointment();
-        if(!$appointment or $appointment['error']) {
-            $this->res['message'] = $model->getAppointmentErrorMessage();
-            return $this->res;
-        }
-        if(isset($appointment['data']) and isset($appointment['data'][0])) {
-            $appointment = $appointment['data'][0];
-            $patient_id = $appointment['patient_id'];
-            if($patient = $model->getPatient($patient_id)) {
-                $patientName = $patient['patient_name'];
-                $patientBirthDate = $patient['patient_birthdate'];
-                $patientMessage = $patientName.', '.$patientBirthDate.' г.р.';
-                $this->res['html'] = $model->getAppointmentSuccessMessage($patientMessage);
-                $this->res['result'] = 1;
-                return $this->res;
+        $model = new FormTicket();
+        if($model->load(Yii::$app->request->post())) {
+            if($model->validateTicketForm()) {
+                if($model->saveValues()) {
+                    if($model->clinic_id and $model->room) {
+                        $this->res['result'] = 1;
+                        $this->res['data'] = ['clinic_id' => $model->clinic_id, 'room' => $model->room];
+                    }
+                }
+            }
+
+
+            \Yii::$app->infoLog->add('model errors', $model->_errors);
+            if($model->_hasErrors()) {
+                $this->res['result'] = 0;
+                $this->res['data'] = null;
+                $model_errors = $model->_errorSummary();
+                $this->res['message'] = $model_errors;
             }
         }
-        $this->res['message'] = $model->getAppointmentErrorMessage();
         return $this->res;
     }
+
+
+
+
+
+
+
 }

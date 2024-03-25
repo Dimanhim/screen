@@ -25,6 +25,8 @@ use Yii;
  */
 class Ticket extends BaseModel
 {
+    public $response;
+
     /**
      * {@inheritdoc}
      */
@@ -39,8 +41,8 @@ class Ticket extends BaseModel
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['clinic_id', 'time_start', 'appointment_id'], 'integer'],
-            [['mis_id', 'patient_name', 'ticket'], 'string', 'max' => 255],
+            [['clinic_id', 'appointment_id'], 'integer'],
+            [['mis_id', 'patient_name', 'ticket', 'time_start', 'time_end', 'mobile'], 'string', 'max' => 255],
         ]);
     }
 
@@ -52,7 +54,9 @@ class Ticket extends BaseModel
         return array_merge(parent::attributeLabels(), [
             'clinic_id' => '№ корпуса',
             'mis_id' => '№ кабинета',
-            'time_start' => 'Время приема',
+            'time_start' => 'Время начала',
+            'time_end' => 'Время окончания',
+            'mobile' => 'Время приема',
             'patient_name' => 'Имя',
             'appointment_id' => 'ID Визита',
             'ticket' => 'Талон',
@@ -86,7 +90,6 @@ class Ticket extends BaseModel
         ];
         $schedulesData = ApiHelper::getDataFromApi(Yii::$app->api->getSchedule($params_shedule));
         $appointmentsData = ApiHelper::getDataFromApi(Yii::$app->api->getAppointments($params_appointments));
-        //\Yii::$app->infoLog->add('$appointmentsData', $appointmentsData, 'appointments-data-log.txt');
         return $this->getTotalData($schedulesData, $appointmentsData);
     }
 
@@ -106,6 +109,11 @@ class Ticket extends BaseModel
                 'patient_name' => $appointmentItem ? $appointmentItem['patient_name'] : null,
                 'visit_id' => $appointmentItem ? $appointmentItem['id'] : null,
                 'ticket' => $appointmentItem ? $this->ticketTimes($appointmentItem) : null,
+                'clinic_id' => $scheduleItem['clinic_id'],
+                'doctor_id' => $scheduleItem['user_id'],
+                'room' => $scheduleItem['room'],
+                'mis_time_start' => $scheduleItem['time_start'],
+                'mis_time_end' => $scheduleItem['time_end'],
             ];
         }
         return $data;
@@ -125,19 +133,27 @@ class Ticket extends BaseModel
                 $sch_time_start = strtotime($scheduleItem['time_start']);
                 $sch_time_end = strtotime($scheduleItem['time_end']);
 
+                // сообщение для логирования
+                //$m = 'sch_s-'.date('H:i',$sch_time_start).' sch_end-'.date('H:i',$sch_time_end).' app_start-'.date('H:i',$app_time_start).' app_end-'.date('H:i',$app_time_end);
+
                 // время визита между временем одной записи расписания
+
                 if(Helpers::isDatesBetween($sch_time_start, $sch_time_end, $app_time_start)) {
+
+                    //\Yii::$app->infoLog->add('1', $m);
                     return $appointmentItem;
                 }
                 // время начала визита входит в запись расписания,
                 // но заканчивается позже
-                if($app_time_start >= $sch_time_start and $app_time_end > $sch_time_end) {
+                if($app_time_start >= $sch_time_start and $app_time_end <= $sch_time_end) {
+                    //\Yii::$app->infoLog->add('2', $m);
                     return $appointmentItem;
                 }
 
                 // визит начался до текущей записи расписания
                 // но время его окончания позже начала в расписании
                 if($app_time_start < $sch_time_start and $app_time_end > $sch_time_start) {
+                    //\Yii::$app->infoLog->add('3', $m);
                     return $appointmentItem;
                 }
             }

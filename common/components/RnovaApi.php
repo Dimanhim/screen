@@ -66,6 +66,9 @@ class RnovaApi extends Model
             $this->result['error'] = $data['error'];
             $this->result['data'] = $data['data'];
         }
+        elseif($json) {
+            $this->result['data'] = $json;
+        }
         return $this->result;
     }
 

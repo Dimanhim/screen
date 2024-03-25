@@ -28,16 +28,11 @@ class TicketController extends BaseController
     {
         $model = new Ticket();
 
-        // Удалить
-        $model->clinic_id = 21;
-        $model->mis_id = '110 Невролог';
-
         $cabinets = Cabinet::findModels()->all();
 
         return $this->render('index', [
             'model' => $model,
             'cabinets' => $cabinets,
-            'list' => [],
         ]);
     }
 }

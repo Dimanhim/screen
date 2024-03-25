@@ -73,4 +73,19 @@ class BaseModel extends ActiveRecord
     {
         return self::className()::find()->where(['is', 'deleted', null])->andWhere(['is_active' => 1])->orderBy(['position' => 'SORT ASC']);
     }
+
+    public function printErrorSummary()
+    {
+        $errorMessages = [];
+        if($this->errors) {
+            foreach($this->errors as $attributeName => $errorValues) {
+                if($errorValues) {
+                    foreach($errorValues as $errorValue) {
+                        $errorMessages[] = $errorValue;
+                    }
+                }
+            }
+        }
+        return $errorMessages ? implode(' ', $errorMessages) : false;
+    }
 }

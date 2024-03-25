@@ -56,6 +56,11 @@ class Cabinet extends BaseModel
         return array_merge(parent::attributeLabels(), $attributes);
     }
 
+    public function getAccesses()
+    {
+        return $this->hasOne(UserAccess::className(), ['clinic_id' => 'clinic_id']);
+    }
+
     public static function getList()
     {
         $cabinets = [];

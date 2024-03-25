@@ -19,7 +19,9 @@ class m240319_064913_tickets extends Migration
 
             'clinic_id'             => Schema::TYPE_INTEGER,
             'mis_id'                => Schema::TYPE_STRING,
-            'time_start'            => Schema::TYPE_INTEGER,
+            'time_start'            => Schema::TYPE_STRING,
+            'time_end'              => Schema::TYPE_STRING,
+            'mobile'                => Schema::TYPE_STRING,
             'patient_name'          => Schema::TYPE_STRING,
             'appointment_id'        => Schema::TYPE_INTEGER,
             'ticket'                => Schema::TYPE_STRING,

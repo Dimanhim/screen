@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="cabinet-list-row col-md-12">
             <h2>Список кабинетов</h2>
             <table class="table table-striped table-bordered">
                 <thead>
@@ -23,7 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tbody>
                 <?php if($cabinets) : ?>
                     <?php foreach($cabinets as $cabinet) : ?>
-                        <tr class="clinic_row" data-clinic="<?= $cabinet->clinic_id ?>" data-mis_id="<?= $cabinet->number ?>">
+                        <?php if(Yii::$app->accesses->hasAccess('ticket', $cabinet->clinic_id)) : ?>
+                        <tr class="clinic_row" data-user="<?= \Yii::$app->user->id ?>" data-clinic="<?= $cabinet->clinic_id ?>" data-mis_id="<?= $cabinet->mis_id ?>">
                             <td>
                                 <div class="clinic_row_clinic">
                                     <?= $cabinet->clinicName ?>
@@ -46,6 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                             </td>
                         </tr>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 <?php else : ?>
                     <tr class="clinic_row">
@@ -57,14 +59,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tbody>
             </table>
         </div>
-        <div class="col-md-8">
+        <div class="ticket-list-row col-md-8">
             <h2>Список визитов</h2>
             <div id="appointment_list">
                 <?= $this->render('_appointment_list', [
                     'model' => $model,
-                    'list' => true,
+                    'list' => false,
                 ]) ?>
             </div>
         </div>
     </div>
 </div>
+<?= $this->render('_form_ticket', [
+        'model' => $model,
+]) ?>

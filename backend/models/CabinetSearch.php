@@ -2,6 +2,8 @@
 
 namespace backend\models;
 
+use common\components\AccessesComponent;
+use common\models\UserAccess;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Cabinet;
@@ -40,7 +42,12 @@ class CabinetSearch extends Cabinet
      */
     public function search($params)
     {
-        $query = Cabinet::findModels();
+        $query = Cabinet::find()->where(['is', 'cabinet.deleted', null])->andWhere(['cabinet.is_active' => 1]);
+        $query->joinWith(['accesses']);
+        $query->andWhere([
+            'user_accesses.access_type' => AccessesComponent::TYPE_CABINET,
+            'user_accesses.user_id' => \Yii::$app->user->id,
+        ]);
 
         // add conditions that should always apply here
 
@@ -59,19 +66,19 @@ class CabinetSearch extends Cabinet
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'clinic_id' => $this->clinic_id,
-            'mis_id' => $this->mis_id,
-            'is_active' => $this->is_active,
-            'deleted' => $this->deleted,
-            'position' => $this->position,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'cabinet.id' => $this->id,
+            'cabinet.clinic_id' => $this->clinic_id,
+            'cabinet.mis_id' => $this->mis_id,
+            'cabinet.is_active' => $this->is_active,
+            'cabinet.deleted' => $this->deleted,
+            'cabinet.position' => $this->position,
+            'cabinet.created_at' => $this->created_at,
+            'cabinet.updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'unique_id', $this->unique_id])
-            ->andFilterWhere(['like', 'number', $this->number])
-            ->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'cabinet.unique_id', $this->unique_id])
+            ->andFilterWhere(['like', 'cabinet.number', $this->number])
+            ->andFilterWhere(['like', 'cabinet.name', $this->name]);
 
         return $dataProvider;
     }

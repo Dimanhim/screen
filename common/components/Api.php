@@ -61,6 +61,13 @@ class Api extends RnovaApi
         return $this->getRequest('getSchedule', $params);
     }
 
+    public function createAppointment($params)
+    {
+        $data =  $this->getRequest('createAppointment', $params);
+        \Yii::$app->infoLog->add('$data', $data, 'api-appointment.txt');
+        return $data;
+    }
+
     public function getUsers($params = [])
     {
         return $this->getRequest('getUsers', $params);

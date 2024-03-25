@@ -96,11 +96,12 @@ class AccessesComponent extends Component
     public function hasAccess($access_type, $clinic_id = null, $user_id = null, $general_access = null)
     {
         if(!$user_id) $user_id = Yii::$app->user->id;
-        return $general_access
+        $access = $general_access
             ?
             UserAccess::find()->where(['user_id' => $user_id, 'access_type' => $access_type])->exists()
             :
             UserAccess::find()->where(['user_id' => $user_id, 'access_type' => $access_type, 'clinic_id' => $clinic_id])->exists();
+        return $access;
     }
 
     public function getClinicData()
