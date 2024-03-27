@@ -42,17 +42,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $data->generalAccessesHtml;
                 }
             ],
-            //'password_hash',
-            //'password_reset_token',
-            //'email:email',
-            //'status',
-            //'is_admin',
-            //'is_active',
-            //'deleted',
-            //'position',
-            //'created_at',
-            //'updated_at',
-            //'verification_token',
             [
                 'class' => ActionColumn::className(),
                 'template' => '{update} {delete}',

@@ -12,37 +12,59 @@ class Api extends RnovaApi
     const STATUS_ID_WAIT   = 2;     // ожидает
     const STATUS_ID_BUSY   = 3;     // на приеме  upcoming
 
+    /**
+     *
+     */
     public function init()
     {
         parent::init();
-
     }
 
+    /**
+     * @param array $params
+     * @param bool $statuses
+     * @return array
+     */
     public function getAppointments($params = [], $statuses = true)
     {
         if($statuses) {
             $params = array_merge($params, ['status_id' => $statuses]);
         }
-        $params = array_merge($params, ['status_id' => $statuses]);
         return $this->getRequest('getAppointments', $params);
     }
 
+    /**
+     * @param array $params
+     * @return array
+     */
     public function getSchedule($params = [])
     {
         return $this->getRequest('getSchedule', $params);
     }
 
+    /**
+     * @param $params
+     * @return array
+     */
     public function createAppointment($params)
     {
         $data =  $this->getRequest('createAppointment', $params);
         return $data;
     }
 
+    /**
+     * @param array $params
+     * @return array
+     */
     public function getUsers($params = [])
     {
         return $this->getRequest('getUsers', $params);
     }
 
+    /**
+     * @param array $params
+     * @return array
+     */
     public function getClinics($params = [])
     {
         return $this->getRequest('getClinics', $params);
@@ -55,8 +77,8 @@ class Api extends RnovaApi
      */
     public function getDataFromRequest($appointment, $schedule)
     {
-        $appointmentData = array_key_exists('data', $appointment) ? $appointment['data'] : [];
-        $scheduleData = array_key_exists('data', $schedule) ? $schedule['data'] : [];
+        $appointmentData = $appointment['data'] ?? [];
+        $scheduleData = $schedule['data'] ?? [];
         if(!empty($appointmentData)) {
             foreach($appointmentData as $userId => $data) {
                 $user = $this->getUserById($data['doctor_id']);
@@ -79,6 +101,9 @@ class Api extends RnovaApi
         }
     }
 
+    /**
+     * @return bool
+     */
     public function getUserData()
     {
         $appointmentsJson = $this->getAppointments();
@@ -90,6 +115,10 @@ class Api extends RnovaApi
     }
 
 
+    /**
+     * @param $userId
+     * @return bool
+     */
     public function getUserById($userId)
     {
         if(($userDataResponse = $this->getRequest('getUsers', ['user_id' => $userId])) && ($userData = ApiHelper::getDataFromApi($userDataResponse))) {
@@ -97,26 +126,4 @@ class Api extends RnovaApi
         }
         return false;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -29,9 +29,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            //['class' => 'yii\grid\SerialColumn'],
-            'id',
-            'number',
+            [
+                'attribute' => 'id',
+                'headerOptions' => ['class' => 'width-70']
+            ],
+            [
+                'attribute' => 'number',
+                'headerOptions' => ['class' => 'width-70']
+            ],
             [
                 'attribute' => 'clinic_id',
                 'value' => function($data) {

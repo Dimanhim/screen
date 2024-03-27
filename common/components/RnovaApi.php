@@ -19,6 +19,9 @@ class RnovaApi extends Model
     protected $time_end;
     protected $time_now;
 
+    /**
+     *
+     */
     public function init()
     {
         $this->request_url = $this->request_url ?? $_ENV['MIS_REQUEST_API_URL'];
@@ -29,29 +32,53 @@ class RnovaApi extends Model
         return parent::init();
     }
 
+    /**
+     * @return mixed
+     */
     public function getTimeStart()
     {
         return $this->time_start;
     }
+
+    /**
+     * @return mixed
+     */
     public function getTimeEnd()
     {
         return $this->time_end;
     }
+
+    /**
+     * @return mixed
+     */
     public function getTimeNow()
     {
         return $this->time_now;
     }
+
+    /**
+     * @return false|string
+     */
     public function getDate()
     {
         return date('d.m.Y', strtotime($this->time_start));
     }
 
+    /**
+     * @param $method
+     * @param array $params
+     * @param null $version
+     * @return array
+     */
     public function getRequest($method, $params = [], $version = null)
     {
         $data = $this->apiRequest($method, $params, $version);
         return $data;
     }
 
+    /**
+     * @param null $message
+     */
     protected function setError($message = null)
     {
         $this->result['error'] = 1;
@@ -60,6 +87,10 @@ class RnovaApi extends Model
     }
 
 
+    /**
+     * @param $json
+     * @return array
+     */
     protected function getResponse($json)
     {
         if($json and ($data = json_decode($json, true)) and isset($data['data']) and isset($data['error'])) {
@@ -72,6 +103,11 @@ class RnovaApi extends Model
         return $this->result;
     }
 
+    /**
+     * @param $method
+     * @param $version
+     * @return string|null
+     */
     private function getFullUrl($method, $version)
     {
         $url = $this->request_url;
@@ -82,6 +118,12 @@ class RnovaApi extends Model
         return $url;
     }
 
+    /**
+     * @param $method
+     * @param array $params
+     * @param $version
+     * @return array
+     */
     private function apiRequest($method, $params = [], $version)
     {
         $url = $this->getFullUrl($method, $version);
@@ -109,7 +151,7 @@ class RnovaApi extends Model
 
         $info = curl_getinfo($curl);
         if($info['http_code'] != 200) {
-            file_put_contents('curl-logs.txt', date('d.m.Y H:i:s').' - '.print_r($info, true)."\n", FILE_APPEND);
+            \Yii::info($info);
         }
         curl_close($curl);
         return $this->getResponse($response);

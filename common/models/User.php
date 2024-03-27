@@ -42,46 +42,6 @@ class User extends ActiveRecord implements IdentityInterface
         return '{{%user}}';
     }
 
-    public function afterSave($insert, $changedAttributes)
-    {
-        $this->handleAccesses();
-        return parent::afterSave($insert, $changedAttributes);
-    }
-
-    public function handleAccesses()
-    {
-        UserAccess::deleteAll(['user_id' => $this->id]);
-        if($this->sections_accesses) {
-            foreach($this->sections_accesses as $access_type => $access_values) {
-                if(is_array($access_values)) {
-                    foreach($access_values as $access_value) {
-                        $userAccess = new UserAccess();
-                        $userAccess->user_id = $this->id;
-                        $userAccess->access_type = $access_type;
-                        $userAccess->clinic_id = $access_value;
-                        $userAccess->save();
-                    }
-                }
-                else {
-                    $userAccess = new UserAccess();
-                    $userAccess->user_id = $this->id;
-                    $userAccess->access_type = $access_type;
-                    $userAccess->save();
-                }
-
-
-            }
-        }
-    }
-
-    public function afterFind()
-    {
-        if($this->password) {
-            $this->password_repeat = $this->password;
-        }
-        return parent::afterFind();
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -90,6 +50,27 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->handleAccesses();
+        return parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     *
+     */
+    public function afterFind()
+    {
+        if($this->password) {
+            $this->password_repeat = $this->password;
+        }
+        return parent::afterFind();
     }
 
     /**
@@ -119,6 +100,37 @@ class User extends ActiveRecord implements IdentityInterface
         ]);
     }
 
+    /**
+     *
+     */
+    public function handleAccesses()
+    {
+        UserAccess::deleteAll(['user_id' => $this->id]);
+        if($this->sections_accesses) {
+            foreach($this->sections_accesses as $access_type => $access_values) {
+                if(is_array($access_values)) {
+                    foreach($access_values as $access_value) {
+                        $userAccess = new UserAccess();
+                        $userAccess->user_id = $this->id;
+                        $userAccess->access_type = $access_type;
+                        $userAccess->clinic_id = $access_value;
+                        $userAccess->save();
+                    }
+                }
+                else {
+                    $userAccess = new UserAccess();
+                    $userAccess->user_id = $this->id;
+                    $userAccess->access_type = $access_type;
+                    $userAccess->save();
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $attribute
+     * @param $params
+     */
     public function passwordRepeatValidator($attribute, $params)
     {
         if($this->password != $this->password_repeat) {
@@ -126,10 +138,17 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAccesses()
     {
         return $this->hasMany(UserAccess::className(), ['user_id' => 'id']);
     }
+
+    /**
+     * @return array
+     */
     public function getAccessesList()
     {
         $list = [];
@@ -146,6 +165,9 @@ class User extends ActiveRecord implements IdentityInterface
         return $list;
     }
 
+    /**
+     * @return string
+     */
     public function getGeneralAccessesHtml()
     {
         $str = '';

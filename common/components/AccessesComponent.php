@@ -31,6 +31,9 @@ class AccessesComponent extends Component
         return parent::init();
     }
 
+    /**
+     *
+     */
     public function setClinics()
     {
         if($clinics = Yii::$app->api->getClinics()) {
@@ -38,6 +41,9 @@ class AccessesComponent extends Component
         }
     }
 
+    /**
+     * @return array
+     */
     public function getClinics()
     {
         return $this->_clinics;
@@ -87,12 +93,18 @@ class AccessesComponent extends Component
                 else {
                     $accesses[$userAccessType]['checked'] = 1;
                 }
-
             }
         }
         return $accesses;
     }
 
+    /**
+     * @param $access_type
+     * @param null $clinic_id
+     * @param null $user_id
+     * @param null $general_access
+     * @return bool
+     */
     public function hasAccess($access_type, $clinic_id = null, $user_id = null, $general_access = null)
     {
         if(!$user_id) $user_id = Yii::$app->user->id;
@@ -104,6 +116,9 @@ class AccessesComponent extends Component
         return $access;
     }
 
+    /**
+     * @return bool|mixed
+     */
     public function getClinicData()
     {
         if($clinics = Yii::$app->api->getClinics()) {
@@ -136,12 +151,12 @@ class AccessesComponent extends Component
                 'checked' => false,
                 'access_values' => [],
             ],
-            self::TYPE_CLINIC => [
+            /*self::TYPE_CLINIC => [
                 'access_type' => self::TYPE_CLINIC,
                 'access_name' => $this->typeName(self::TYPE_CLINIC),
                 'checked' => false,
                 'access_values' => [],
-            ],
+            ],*/
             self::TYPE_CABINET => [
                 'access_type' => self::TYPE_CABINET,
                 'access_name' => $this->typeName(self::TYPE_CABINET),
@@ -156,6 +171,4 @@ class AccessesComponent extends Component
             ],
         ];
     }
-
-
 }
