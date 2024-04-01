@@ -21,13 +21,14 @@ class FormTicket extends Model
     public $time_start;
     public $time_end;
     public $clinic_id;
+    public $cabinet_id;
     public $doctor_id;
     public $room;
 
     public function rules()
     {
         return [
-            [['first_name', 'mobile', 'time_start', 'time_end', 'clinic_id', 'doctor_id', 'room'], 'required', 'message' => 'Поле не может быть пустым'],
+            [['first_name', 'mobile', 'time_start', 'time_end', 'clinic_id', 'cabinet_id', 'doctor_id', 'room'], 'required', 'message' => 'Поле не может быть пустым'],
             [['first_name', 'last_name', 'third_name', 'birth_date', 'mobile', 'time_start', 'time_end', 'clinic_id', 'room'], 'string', 'max' => 32],
         ];
     }
@@ -43,6 +44,7 @@ class FormTicket extends Model
             'time_start' => 'Дата и время начала',
             'time_end' => 'Дата и время окончания',
             'clinic_id' => 'ID клиники',
+            'cabinet_id' => 'ID кабинета',
             'doctor_id' => 'ID врача',
             'room' => 'Кабинет',
         ];
@@ -55,6 +57,7 @@ class FormTicket extends Model
         $model->clinic_id = $this->clinic_id;
         $model->mobile = Helpers::phoneFormat($this->mobile);
         $model->mis_id = $this->room;
+        $model->setCabinetId();
         $model->time_start = $this->time_start;
         $model->time_end = $this->time_end;
         $model->setTicket();

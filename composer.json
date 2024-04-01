@@ -40,7 +40,8 @@
         "hail812/yii2-adminlte3": "~1.1",
         "kartik-v/yii2-field-range": "*",
         "cleantalk/php-antispam": "dev-master",
-        "vlucas/phpdotenv": "dev-master"
+        "vlucas/phpdotenv": "dev-master",
+        "andrey-tech/bitrix24-api-php": "^1.6"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

@@ -25,7 +25,7 @@ function showAppointmentList(clinic_id, mis_id) {
     addPreloader();
     let container = $('#appointment_list');
     $.ajax({
-        url: '/admin/ajax/get-appointment-list',
+        url: '/ajax/get-appointment-list',
         type: 'POST',
         data: {clinic_id: clinic_id, mis_id: mis_id},
         success: function (res) {
@@ -48,7 +48,7 @@ function submitTicketForm() {
     let form = $('#form-ticket');
     let data = form.serialize();
     $.ajax({
-        url: '/admin/ajax/submit-ticket-form',
+        url: '/ajax/submit-ticket-form',
         type: 'POST',
         data: data,
         success: function (res) {

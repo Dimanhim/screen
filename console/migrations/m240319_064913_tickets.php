@@ -18,6 +18,7 @@ class m240319_064913_tickets extends Migration
             'unique_id'             => Schema::TYPE_STRING . ' NOT NULL',
 
             'clinic_id'             => Schema::TYPE_INTEGER,
+            'cabinet_id'            => Schema::TYPE_INTEGER,
             'mis_id'                => Schema::TYPE_STRING,
             'time_start'            => Schema::TYPE_STRING,
             'time_end'              => Schema::TYPE_STRING,

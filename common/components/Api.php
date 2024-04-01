@@ -3,10 +3,11 @@
 namespace common\components;
 
 use yii\base\Model;
+use common\components\RnovaApi;
 
-class Api extends RnovaApi
+class Api
 {
-    private $status_id = '1,2,3';
+    private $api;
 
     const STATUS_ID_WRITED = 1;     // записан
     const STATUS_ID_WAIT   = 2;     // ожидает
@@ -15,9 +16,9 @@ class Api extends RnovaApi
     /**
      *
      */
-    public function init()
+    public function __construct()
     {
-        parent::init();
+        $this->api = new RnovaApi($_ENV['MIS_REQUEST_API_URL'], $_ENV['MIS_API_KEY']);
     }
 
     /**
@@ -30,7 +31,7 @@ class Api extends RnovaApi
         if($statuses) {
             $params = array_merge($params, ['status_id' => $statuses]);
         }
-        return $this->getRequest('getAppointments', $params);
+        return $this->api->getRequest('getAppointments', $params);
     }
 
     /**
@@ -39,7 +40,7 @@ class Api extends RnovaApi
      */
     public function getSchedule($params = [])
     {
-        return $this->getRequest('getSchedule', $params);
+        return $this->api->getRequest('getSchedule', $params);
     }
 
     /**
@@ -48,7 +49,7 @@ class Api extends RnovaApi
      */
     public function createAppointment($params)
     {
-        $data =  $this->getRequest('createAppointment', $params);
+        $data =  $this->api->getRequest('createAppointment', $params);
         return $data;
     }
 
@@ -58,7 +59,7 @@ class Api extends RnovaApi
      */
     public function getUsers($params = [])
     {
-        return $this->getRequest('getUsers', $params);
+        return $this->api->getRequest('getUsers', $params);
     }
 
     /**
@@ -67,7 +68,7 @@ class Api extends RnovaApi
      */
     public function getClinics($params = [])
     {
-        return $this->getRequest('getClinics', $params);
+        return $this->api->getRequest('getClinics', $params);
     }
 
     /**
@@ -121,7 +122,7 @@ class Api extends RnovaApi
      */
     public function getUserById($userId)
     {
-        if(($userDataResponse = $this->getRequest('getUsers', ['user_id' => $userId])) && ($userData = ApiHelper::getDataFromApi($userDataResponse))) {
+        if(($userDataResponse = $this->api->getRequest('getUsers', ['user_id' => $userId])) && ($userData = ApiHelper::getDataFromApi($userDataResponse))) {
             return $userData[0];
         }
         return false;

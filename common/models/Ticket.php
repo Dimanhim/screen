@@ -43,7 +43,7 @@ class Ticket extends BaseModel
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['clinic_id', 'appointment_id', 'time_start_ts', 'time_end_ts'], 'integer'],
+            [['clinic_id', 'cabinet_id', 'appointment_id', 'time_start_ts', 'time_end_ts'], 'integer'],
             [['mis_id', 'patient_name', 'ticket_letter', 'ticket_number', 'time_start', 'time_end', 'mobile'], 'string', 'max' => 255],
         ]);
     }
@@ -55,6 +55,7 @@ class Ticket extends BaseModel
     {
         return array_merge(parent::attributeLabels(), [
             'clinic_id' => '№ корпуса',
+            'cabinet_id' => '№ кабинета',
             'mis_id' => '№ кабинета',
             'time_start' => 'Время начала',
             'time_end' => 'Время окончания',
@@ -90,6 +91,16 @@ class Ticket extends BaseModel
     public function getTicket()
     {
         return $this->ticket_letter . $this->ticket_number;
+    }
+
+    /**
+     *
+     */
+    public function setCabinetId()
+    {
+        if($cabinet = Cabinet::findOne(['mis_id' => $this->mis_id])) {
+            $this->cabinet_id = $cabinet->id;
+        }
     }
 
     /**
@@ -179,6 +190,7 @@ class Ticket extends BaseModel
     {
         if(!$appointmentsData) return [];
         foreach($appointmentsData as $appointmentItem) {
+            if(!isset($appointmentItem['clinic_id']) or !isset($scheduleItem['clinic_id']) or !isset($appointmentItem['room']) or !isset($scheduleItem['room'])) continue;
             if($appointmentItem['clinic_id'] == $scheduleItem['clinic_id'] and $appointmentItem['room'] == $scheduleItem['room']) {
                 $app_time_start = strtotime($appointmentItem['time_start']);
                 $app_time_end = strtotime($appointmentItem['time_end']);

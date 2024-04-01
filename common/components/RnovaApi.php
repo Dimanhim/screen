@@ -4,9 +4,10 @@ namespace common\components;
 
 use yii\base\Model;
 
-class RnovaApi extends Model
+class RnovaApi
 {
-    public $result = [
+    public $_errors = [];
+    public $_data = [
         'error' => 0,
         'message' => null,
         'data' => [],
@@ -22,46 +23,13 @@ class RnovaApi extends Model
     /**
      *
      */
-    public function init()
+    public function __construct($mis_request_api_url, $mis_api_key)
     {
-        $this->request_url = $this->request_url ?? $_ENV['MIS_REQUEST_API_URL'];
-        $this->api_key = $this->api_key ?? $_ENV['MIS_API_KEY'];
+        $this->request_url = $mis_request_api_url;
+        $this->api_key = $mis_api_key;
         $this->time_start = date('d.m.Y').' 00:00';
         $this->time_end = date('d.m.Y').' 23:59';
         $this->time_now = date('d.m.Y H:i');
-        return parent::init();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTimeStart()
-    {
-        return $this->time_start;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTimeEnd()
-    {
-        return $this->time_end;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTimeNow()
-    {
-        return $this->time_now;
-    }
-
-    /**
-     * @return false|string
-     */
-    public function getDate()
-    {
-        return date('d.m.Y', strtotime($this->time_start));
     }
 
     /**
@@ -72,20 +40,8 @@ class RnovaApi extends Model
      */
     public function getRequest($method, $params = [], $version = null)
     {
-        $data = $this->apiRequest($method, $params, $version);
-        return $data;
+        return $this->apiRequest($method, $params, $version);
     }
-
-    /**
-     * @param null $message
-     */
-    protected function setError($message = null)
-    {
-        $this->result['error'] = 1;
-        $this->result['message'] = $message;
-        $this->result['data'] = [];
-    }
-
 
     /**
      * @param $json
@@ -94,13 +50,13 @@ class RnovaApi extends Model
     protected function getResponse($json)
     {
         if($json and ($data = json_decode($json, true)) and isset($data['data']) and isset($data['error'])) {
-            $this->result['error'] = $data['error'];
-            $this->result['data'] = $data['data'];
+            $this->_addError($data['error']);
+            $this->_addData($data['data']);
         }
         elseif($json) {
-            $this->result['data'] = $json;
+            $this->_addData($json);
         }
-        return $this->result;
+        return $this->_data;
     }
 
     /**
@@ -155,5 +111,34 @@ class RnovaApi extends Model
         }
         curl_close($curl);
         return $this->getResponse($response);
+    }
+
+
+
+    public function _addData($data) {
+        if($data) {
+            if(isset($data['code']) and isset($data['desc'])) {
+                $this->_data['message'] = implode(' ', $data);
+            }
+            $this->_data['data'] = $data;
+        }
+    }
+
+    public function _hasErrors()
+    {
+        return !empty($this->_errors);
+    }
+
+    public function _addError($message)
+    {
+        if($message) {
+            $this->_errors[] = $message;
+        }
+    }
+
+    public function _errorSummary()
+    {
+        if($this->_errors) return implode(' ', $this->_errors);
+        return false;
     }
 }

@@ -21,5 +21,13 @@ class TabletController extends Controller
 
         ]);
     }
+
+    public function actionContentPage()
+    {
+        echo "<pre>";
+        print_r(\Yii::$app->request->get('id'));
+        echo "</pre>";
+        exit;
+    }
 }
 
