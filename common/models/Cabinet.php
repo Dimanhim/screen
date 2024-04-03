@@ -198,9 +198,23 @@ class Cabinet extends BaseModel
     public function tooltipText()
     {
         $str = '<div class="tooltip-view-links">';
-        $str .= '<div>'.Html::a('Кабинет врача', ['../tablet/'.$this->id, 'type' => 'cabinet'], ['target' => '_blanc']).'</div>';
-        $str .= '<div>'.Html::a('Очередь талонов', ['../tablet/'.$this->id, 'type' => 'ticket'], ['target' => '_blanc']).'</div>';
+        $str .= '<div>'.Html::a('Кабинет врача', $this->getRoomUrl('regular'), ['target' => '_blanc']).'</div>';
+        $str .= '<div>'.Html::a('Очередь талонов', $this->getRoomUrl('tickets'), ['target' => '_blanc']).'</div>';
         $str .= '</div>';
         return $str;
+    }
+
+    /**
+     * @param string $mode
+     * @return array
+     */
+    public function getRoomUrl(string $mode) : array
+    {
+        return [
+            '../screens/',
+            'roomId' => $this->unique_id,
+            'roomNumber' => $this->number,
+            'mode' => $mode
+        ];
     }
 }

@@ -10,6 +10,7 @@ use common\components\AccessesComponent;
         <div class="card-body">
             <?php if($accessesList = Yii::$app->accesses->getAccessesForUser($model->id)) : ?>
                 <?php foreach($accessesList as $accessItem) : ?>
+                    <?php if(!isset($accessItem['access_values'])) continue ?>
                     <?php if($accessItem['access_values']) : ?>
                         <div class="form-group">
                             <?= $accessItem['access_name'] ?>:

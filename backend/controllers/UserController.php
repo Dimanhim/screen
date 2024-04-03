@@ -66,6 +66,7 @@ class UserController extends BaseController
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                \Yii::$app->session->setFlash('success', 'Пользователь успешно создан');
                 return $this->redirect(['index']);
             }
         } else {
@@ -90,6 +91,7 @@ class UserController extends BaseController
 
         if ($this->request->isPost && $model->load($this->request->post())) {
             if($model->validate() and $model->save()) {
+                \Yii::$app->session->setFlash('success', 'Пользователь успешно обновлен');
                 return $this->redirect(['update', 'id' => $model->id]);
             }
         }

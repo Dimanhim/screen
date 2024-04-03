@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use himiklab\sortablegrid\SortableGridBehavior;
@@ -64,6 +65,12 @@ class BaseModel extends ActiveRecord
             $this->is_active = 1;
         }
         return parent::beforeSave($insert);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        Yii::$app->session->setFlash('success', 'Изменения успешно сохранены');
+        return parent::afterSave($insert, $changedAttributes);
     }
 
     /**
