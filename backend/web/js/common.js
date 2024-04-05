@@ -80,4 +80,14 @@ $(document).ready(function() {
         submitTicketForm();
     });
 
+    $(document).on('click', '.ticket-action-print', function(e) {
+        e.preventDefault();
+        let room = $(this).attr('data-room');
+        let ticket = $(this).attr('data-ticket');
+        if(room.length && ticket.length) {
+            $('.js_print_room').html(room)
+            $('.js_print_ticket').html(ticket)
+            CallPrint()
+        }
+    });
 })

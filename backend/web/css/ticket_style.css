@@ -1,0 +1,56 @@
+.pos-receipt {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 185px;
+    max-width: 185px;
+    font-size: 14px;
+    font-family: 'Times New Roman';
+    padding: 0;
+}
+
+.pos-receipt .text {
+    word-break: break-all;
+    line-height: 1.1em;
+    font-weight: bold;
+}
+
+.pos-receipt .centered {
+    text-align: center;
+    align-content: center;
+}
+
+.pos-receipt .logo {
+    max-width: inherit;
+    width: inherit;
+    margin-bottom: 8px;
+}
+
+.pos-receipt .text-mid {
+    font-size: 16px;
+    margin-bottom: 0;
+    line-height: 1em;
+}
+
+.pos-receipt .text-big {
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 1em;
+    margin: 0;
+}
+
+@media print {
+    html,
+    body,
+    div {
+        margin: 0;
+        padding: 0;
+    }
+    .no-print,
+    .no-print * {
+        display: none !important;
+    }
+    .pos-receipt {
+        display: flex !important;
+    }
+}

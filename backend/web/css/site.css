@@ -441,3 +441,7 @@ END PRELOADER
 .width-70 {
     width: 70px;
 }
+
+.pos-receipt {
+    display: none;
+}
