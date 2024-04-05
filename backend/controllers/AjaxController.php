@@ -32,7 +32,8 @@ class AjaxController extends Controller
     {
         $model = new Ticket([
             'clinic_id' => Yii::$app->request->post('clinic_id'),
-            'mis_id' => Yii::$app->request->post('mis_id')
+            'mis_id' => Yii::$app->request->post('mis_id'),
+            'cabinet_id' => Yii::$app->request->post('cabinet_id')
         ]);
         if($html = $model->getAppointmentListHtml()) {
             $this->res['result'] = 1;

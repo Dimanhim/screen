@@ -94,6 +94,14 @@ class Ticket extends BaseModel
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCabinet()
+    {
+        return $this->hasOne(Cabinet::className(), ['id' => 'cabinet_id']);
+    }
+
+    /**
      *
      */
     public function setCabinetId()

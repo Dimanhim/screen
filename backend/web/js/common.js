@@ -53,7 +53,8 @@ $(document).ready(function() {
         $('#appointment_list').html()
         let clinic_id = $(this).attr('data-clinic');
         let mis_id = $(this).attr('data-mis_id');
-        showAppointmentList(clinic_id, mis_id)
+        let cabinet_id = $(this).attr('data-cabinet_id');
+        showAppointmentList(clinic_id, mis_id, cabinet_id)
     });
     $(document).on('click', '.alert-modal', function(e) {
         e.preventDefault();

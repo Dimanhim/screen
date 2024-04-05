@@ -19,15 +19,14 @@ function removeMediaContentBlock() {
     }
 }
 
-function showAppointmentList(clinic_id, mis_id) {
-    console.log('list', clinic_id + ' ' + mis_id)
+function showAppointmentList(clinic_id, mis_id, cabinet_id) {
     toggleTicketRow()
     addPreloader();
     let container = $('#appointment_list');
     $.ajax({
         url: '/ajax/get-appointment-list',
         type: 'POST',
-        data: {clinic_id: clinic_id, mis_id: mis_id},
+        data: {clinic_id: clinic_id, mis_id: mis_id, cabinet_id: cabinet_id},
         success: function (res) {
             console.log('res list', res)
             if(res.result == 1 && res.html.length) {
