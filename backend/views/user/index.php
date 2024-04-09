@@ -34,7 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'name',
             'username',
-            'password',
             [
                 'attribute' => 'sections_accesses',
                 'format' => 'raw',

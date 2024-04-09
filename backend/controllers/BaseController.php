@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\components\AccessesComponent;
 use common\models\Cabinet;
+use common\models\User;
 use himiklab\thumbnail\EasyThumbnail;
 use himiklab\thumbnail\EasyThumbnailImage;
 use Yii;
@@ -34,6 +35,14 @@ class BaseController extends Controller
      */
     public function beforeAction($action)
     {
+        if(!$user = User::find()->exists()) {
+            if($action->id != 'signup') {
+                return $this->redirect(['/site/signup']);
+            }
+        }
+        elseif($action->id == 'signup') {
+            return $this->redirect(['/cabinet/index']);
+        }
         return parent::beforeAction($action);
     }
     /**
@@ -46,7 +55,7 @@ class BaseController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
+                        'actions' => ['login', 'error', 'signup'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],

@@ -17,12 +17,11 @@ class m130524_201442_init extends Migration
             'id' => $this->primaryKey(),
 
             'username' => $this->string()->notNull()->unique(),
-            'name' => $this->string()->notNull()->unique(),
+            'name' => $this->string()->notNull(),
             'auth_key' => $this->string(32)->notNull(),
-            'password' => $this->string(),
             'password_hash' => $this->string()->notNull(),
             'password_reset_token' => $this->string()->unique(),
-            'email' => $this->string()->notNull(),
+            'email' => $this->string(),
 
             'status' => $this->smallInteger()->notNull()->defaultValue(10),
 

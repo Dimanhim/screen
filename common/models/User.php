@@ -31,6 +31,7 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 10;
 
     public $sections_accesses;
+    public $password;
     public $password_repeat;
 
 
@@ -73,6 +74,15 @@ class User extends ActiveRecord implements IdentityInterface
         return parent::afterFind();
     }
 
+    public function beforeValidate()
+    {
+        if ($this->password) {
+            $this->setPassword($this->password);
+            $this->generateAuthKey();
+        }
+        return parent::beforeValidate();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -81,7 +91,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             [['name', 'username', 'password', 'password_repeat'], 'required'],
             [['username'], 'unique', 'message' => 'Пользователь с таким логином уже зарегистрирован'],
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             [['is_admin'], 'integer'],
             [['sections_accesses', 'password_repeat'], 'safe'],
