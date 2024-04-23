@@ -51,6 +51,7 @@ class AjaxController extends Controller
                 if($model->saveValues()) {
                     if($model->clinic_id and $model->room) {
                         $this->res['result'] = 1;
+                        $this->res['message'] = $model->model ? $model->model->ticket : null;
                         $this->res['data'] = ['clinic_id' => $model->clinic_id, 'room' => $model->room, 'cabinet' => $model->cabinet_id];
                     }
                 }

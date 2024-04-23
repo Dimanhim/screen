@@ -4,6 +4,7 @@ namespace common\models;
 
 use common\components\Helpers;
 use common\components\ApiHelper;
+use common\components\Api;
 use Yii;
 
 /**
@@ -122,73 +123,41 @@ class Ticket extends BaseModel
         ]);
     }
 
-    /**
-     * @return array|bool
-     */
     public function ticketList()
     {
         if(!$this->clinic_id and !$this->mis_id) return false;
-        $params_shedule = [
-            'clinic_id' => $this->clinic_id,
-            'room' => $this->mis_id,
-            'time_start' => $this->_today_start,
-            'time_end' => $this->_today_end,
-            'show_busy' => 1,
-        ];
+
         $params_appointments = [
             'clinic_id' => $this->clinic_id,
             'date_from' => $this->_today_start,
             'date_to' => $this->_today_end,
             'room' => $this->mis_id,
-            'show_busy' => 1,
+            'status_id' => Api::STATUS_ID_WAIT,
         ];
-        $schedulesData = ApiHelper::getDataFromApi(Yii::$app->api->getSchedule($params_shedule));
+
         $appointmentsData = ApiHelper::getDataFromApi(Yii::$app->api->getAppointments($params_appointments));
 
-        return $this->getTotalData($schedulesData, $appointmentsData);
-    }
+        if(!$appointmentsData) return false;
 
-    /**
-     * @param $schedulesFullData
-     * @param $appointmentsData
-     * @return array|bool
-     */
-    public function getTotalData($schedulesFullData, $appointmentsData)
-    {
-        if(!$schedulesFullData) return false;
-        foreach($schedulesFullData as $schedulesFullItem) {
-            $schedulesData = $schedulesFullItem;
-            break;
-        }
-
-        $data = [];
-        foreach($schedulesData as $scheduleItem) {
-            $appointmentItem = $this->getAppointmentItem($scheduleItem, $appointmentsData);
-            $data[] = [
-                'time_start' => Helpers::getTimeFromDatetime($scheduleItem['time_start']),
-                'patient_name' => $appointmentItem ? $appointmentItem['patient_name'] : null,
-                'visit_id' => $appointmentItem ? $appointmentItem['id'] : null,
-                //'ticket' => $appointmentItem ? $this->ticketTimes($appointmentItem) : null,
-                'ticket' => self::ticketName($appointmentItem),
-                'clinic_id' => $scheduleItem['clinic_id'],
-                'doctor_id' => $scheduleItem['user_id'],
-                'room' => $scheduleItem['room'],
-                'mis_time_start' => $scheduleItem['time_start'],
-                'mis_time_end' => $scheduleItem['time_end'],
-            ];
-        }
-        return $data;
+        return $appointmentsData;
     }
 
     public static function ticketName($appointmentItem)
     {
+        $data = [
+            'name' => null,
+            'print' => null,
+        ];
         if($appointmentItem) {
             if($ticket = self::findOne(['appointment_id' => $appointmentItem['id']])) {
-                return $ticket->ticket;
+                $data['name'] = $ticket->ticket;
+                $data['print'] = true;
+                return $data;
             }
-            return self::ticketTimes($appointmentItem);
+            $data['name'] = self::ticketTimes($appointmentItem);
+            return $data;
         }
-        return null;
+        return $data;
     }
 
     // ЭТОТ МЕТОД НУЖНО ДОПИЛИТЬ

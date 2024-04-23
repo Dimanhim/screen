@@ -28,11 +28,34 @@ class TicketController extends BaseController
     {
         $model = new Ticket();
 
-        $cabinets = Cabinet::findModels()->all();
+        $cabinets = Cabinet::findModels()->andWhere(['show_tickets' => 1])->all();
 
         return $this->render('index', [
             'model' => $model,
             'cabinets' => $cabinets,
         ]);
+    }
+
+    public function actionGenerateTicket($clinic_id, $room, $time_start, $time_end, $patient_name, $mobile, $appointment_id)
+    {
+        $model = new Ticket();
+        $model->setTicket();
+        $model->clinic_id = $clinic_id;
+        $model->mis_id = $clinic_id;
+        $model->time_start = $time_start;
+        $model->time_end = $time_end;
+        $model->patient_name = $patient_name;
+        $model->mobile = $mobile;
+        $model->appointment_id = $appointment_id;
+        if($cabinet = Cabinet::findOne(['mis_id' => $room])) {
+            $model->cabinet_id = $cabinet->id;
+        }
+        if($model->save()) {
+            \Yii::$app->session->setFlash('success', 'Талон ' . $model->ticket . ' успешно добавлен');
+        }
+        else {
+            \Yii::$app->session->setFlash('error', 'Ошибка создания талона');
+        }
+        return $this->redirect(\Yii::$app->request->referrer);
     }
 }

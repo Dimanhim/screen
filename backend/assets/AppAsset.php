@@ -30,6 +30,7 @@ class AppAsset extends AssetBundle
             'css/bootstrap-icons.css',
             'css/font-awesome.min.css',
             'css/bootstrap-datepicker.min.css',
+            'css/toastr.min.css',
             'css/ticket_style.css',
             'css/site.css?v='.mt_rand(1000,10000),
         ];
@@ -44,6 +45,7 @@ class AppAsset extends AssetBundle
             'js/bootstrap-datepicker.ru.min.js',
             'js/inputmask.js',
             'js/jquery.inputmask.js',
+            'js/toastr.min.js',
             'js/functions.js?v='.mt_rand(1000,10000),
             'js/common.js?v='.mt_rand(1000,10000),
         ];

@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <div class="row">
-        <div class="cabinet-list-row col-md-12">
+        <div class="cabinet-list-row col-md-4">
             <h2>Список кабинетов</h2>
             <table class="table table-striped table-bordered">
                 <thead>

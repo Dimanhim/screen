@@ -1,26 +1,6 @@
-displayMediaContent();
-function displayMediaContent() {
-    $('.media-content').css('display', 'none');
-    $('#ad-type input').each(function (index, element) {
-        let el = $(element);
-        if(el.is(':checked')) {
-            if(el.val() == 1) {
-                $('.video-content').css('display', 'block');
-            }
-            else if(el.val() == 2) {
-                $('.audio-content').css('display', 'block');
-            }
-        }
-    });
-}
-function removeMediaContentBlock() {
-    if(!$('.media-content-block .media-content-item').length) {
-        $('.media-content-block').remove();
-    }
-}
 
 function showAppointmentList(clinic_id, mis_id, cabinet_id) {
-    toggleTicketRow()
+    setCookie('cabinet_id', cabinet_id, 3);
     addPreloader();
     let container = $('#appointment_list');
     $.ajax({
@@ -41,6 +21,7 @@ function showAppointmentList(clinic_id, mis_id, cabinet_id) {
     removePreloader()
 }
 
+/*
 function submitTicketForm() {
     addPreloader();
     let form = $('#form-ticket');
@@ -51,9 +32,8 @@ function submitTicketForm() {
         data: data,
         success: function (res) {
             if(res.result == 1 && res.data) {
-                console.log('res data', res.data)
                 $('#ticketModal').modal('hide');
-                $('#resultModal').modal('show');
+                displaySuccessMessage('Талон ' + res.message + ' успешно создан')
                 showAppointmentList(res.data.clinic_id, res.data.room, res.data.cabinet)
             }
             else if(res.message != null) {
@@ -67,26 +47,32 @@ function submitTicketForm() {
         }
     });
 }
+*/
 
-function toggleTicketRow() {
-    if($('.clinic_row.active').length) {
-        $('.cabinet-list-row').removeClass('col-md-12').addClass('col-md-4');
-        $('.ticket-list-row').addClass('active')
-    }
-    else {
-        $('.cabinet-list-row').removeClass('col-md-4').addClass('col-md-12');
-        $('.ticket-list-row').removeClass('active')
+function setActiveCabinet() {
+    let cabinet_id = getCookie('cabinet_id');
+    if(cabinet_id.length) {
+        $('.clinic_row[data-cabinet_id="' + cabinet_id + '"]').trigger('click')
     }
 
 }
 
-
-function displayAlertModal(subject, href) {
+function displayAlertModal(subject, href, replaceTitle = false) {
     if(!subject.length && !href.length) return false;
-    $('#alert-subject').text('')
+    if(replaceTitle) {
+        $('#alert-subject-title').text('')
+    }
+    else {
+        $('#alert-subject').text('')
+    }
     $('#alert-confirm-btn').attr('href', '')
 
-    $('#alert-subject').text(subject)
+    if(replaceTitle) {
+        $('#alert-subject-title').text(subject)
+    }
+    else {
+        $('#alert-subject').text(subject)
+    }
     $('#alert-confirm-btn').attr('href', href)
     $('#alertModal').modal('show')
 }
@@ -103,16 +89,27 @@ function removePreloader() {
 }
 
 function displaySuccessMessage(message) {
-    $('.info-message').text(message).fadeIn();
-    setTimeout(function() {
-        $('.info-message').text('').fadeOut();
-    }, 5000)
+    toastr.success(message)
 }
 function displayErrorMessage(message) {
-    $('.info-message').addClass('error').text(message).fadeIn();
-    setTimeout(function() {
-        $('.info-message').text('').fadeOut();
-    }, 5000)
+    toastr.error(message)
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000 * 1000));
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
 }
 
 

@@ -428,9 +428,6 @@ END PRELOADER
     font-size: 1rem;
     line-height: 1.5;
 }
-.ticket-list-row {
-    display: none;
-}
 .ticket-list-row.active {
     display: block;
 }

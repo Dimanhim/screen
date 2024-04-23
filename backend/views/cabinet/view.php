@@ -39,6 +39,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'name',
             'mis_id',
+            [
+                'attribute' => 'show_tickets',
+                'value' => function($data) {
+                    return $data->show_tickets ? 'Да' : 'Нет';
+                }
+            ],
         ],
     ]) ?>
 

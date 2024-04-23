@@ -23,6 +23,7 @@ use common\models\Cabinet;
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'clinic_id')->dropDownList($model->clinicList(), ['prompt' => '[Не выбрано]']) ?>
                     <?= $form->field($model, 'mis_id')->textInput() ?>
+                    <?= $form->field($model, 'show_tickets')->checkbox() ?>
                 </div>
             </div>
         </div>

@@ -9,6 +9,9 @@ class Api
 {
     private $api;
 
+    // ошибки ответа api при авторизации
+    public $_api_error = null;
+
     const STATUS_ID_WRITED = 1;     // записан
     const STATUS_ID_WAIT   = 2;     // ожидает
     const STATUS_ID_BUSY   = 3;     // на приеме  upcoming
@@ -26,12 +29,13 @@ class Api
      * @param bool $statuses
      * @return array
      */
-    public function getAppointments($params = [], $statuses = true)
+    public function getAppointments($params = [], $statuses = false)
     {
         if($statuses) {
             $params = array_merge($params, ['status_id' => $statuses]);
         }
-        return $this->api->getRequest('getAppointments', $params);
+        $request = $this->api->getRequest('getAppointments', $params);
+        return $this->handleRequest($request);
     }
 
     /**
@@ -40,7 +44,8 @@ class Api
      */
     public function getSchedule($params = [])
     {
-        return $this->api->getRequest('getSchedule', $params);
+        $request = $this->api->getRequest('getSchedule', $params);
+        return $this->handleRequest($request);
     }
 
     /**
@@ -49,8 +54,8 @@ class Api
      */
     public function createAppointment($params)
     {
-        $data =  $this->api->getRequest('createAppointment', $params);
-        return $data;
+        $request = $this->api->getRequest('createAppointment', $params);
+        return $this->handleRequest($request);
     }
 
     /**
@@ -59,7 +64,8 @@ class Api
      */
     public function getUsers($params = [])
     {
-        return $this->api->getRequest('getUsers', $params);
+        $request = $this->api->getRequest('getUsers', $params);
+        return $this->handleRequest($request);
     }
 
     /**
@@ -68,7 +74,8 @@ class Api
      */
     public function getClinics($params = [])
     {
-        return $this->api->getRequest('getClinics', $params);
+        $request = $this->api->getRequest('getClinics', $params);
+        return $this->handleRequest($request);
     }
 
     /**
@@ -115,7 +122,6 @@ class Api
         return false;
     }
 
-
     /**
      * @param $userId
      * @return bool
@@ -126,5 +132,25 @@ class Api
             return $userData[0];
         }
         return false;
+    }
+
+    /**
+     * @return null
+     */
+    public function getApiError()
+    {
+        return $this->_api_error;
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    private function handleRequest($request)
+    {
+        if(isset($request['data']) and isset($request['data']['code']) and isset($request['data']['desc'])) {
+            $this->_api_error = $request['data']['desc'];
+        }
+        return $request;
     }
 }

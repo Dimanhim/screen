@@ -31,7 +31,7 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => Helper::img('/img/logo.svg', ['class' => 'logo']),
+        'brandLabel' => Helper::img('/img/' . Yii::$app->params['logoPath'], ['class' => 'logo']),
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
@@ -53,7 +53,7 @@ AppAsset::register($this);
     }
 
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
     }
     //echo Helper::img('/img/logo.png');
     echo Nav::widget([
@@ -65,7 +65,7 @@ AppAsset::register($this);
     } else {
         echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                'Выход (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout text-decoration-none']
             )
             . Html::endForm();
@@ -95,6 +95,13 @@ AppAsset::register($this);
 </footer>
 
 <?php $this->endBody() ?>
+
+<?php if(Yii::$app->api->getApiError()) : ?>
+<script>
+    displayErrorMessage('<?= Yii::$app->api->getApiError() ?>')
+</script>
+<?php endif; ?>
+
 </body>
 </html>
 <?php $this->endPage();

@@ -12,6 +12,8 @@ class FormTicket extends Model
 {
     public $_errors = [];
 
+    public $model;
+
     public $first_name;
     public $last_name;
     public $third_name;
@@ -62,6 +64,7 @@ class FormTicket extends Model
         $model->time_start = $this->time_start;
         $model->time_end = $this->time_end;
         $model->setTicket();
+        $this->model = $model;
         if($model->save()) {
             return $this->sendApiRequest($model);
         }

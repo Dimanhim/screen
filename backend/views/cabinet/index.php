@@ -47,11 +47,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'mis_id',
             [
+                'attribute' => 'show_tickets',
+                'value' => function($data) {
+                    return $data->show_tickets ? 'Да' : 'Нет';
+                }
+            ],
+            [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update} {delete}',
                 'buttons' => [
                     'view' => function($url, $model) {
-                        return Html::a(Cabinet::getViewSvg(), ['../room_id/'.$model->id],
+                        return Html::a('<i class="bi bi-eye"></i>', ['../room_id/'.$model->id],
                             [
                                 'target' => '_blanc',
                                 'disabled' => true,
@@ -61,8 +67,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]
                         );
                     },
+                    'update' => function($url, $model) {
+                        return Html::a('<i class="bi bi-pencil"></i>', ['cabinet/update', 'id' => $model->id]
+                        );
+                    },
                     'delete' => function($url, $model) {
-                        return Html::a(Cabinet::getDeleteSvg(), ['cabinet/delete', 'id' => $model->id],
+                        return Html::a('<i class="bi bi-trash"></i>', ['cabinet/delete', 'id' => $model->id],
                             [
                                 'target' => '_blanc',
                                 'class' => 'alert-modal',

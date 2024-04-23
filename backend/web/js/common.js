@@ -1,33 +1,4 @@
 $(document).ready(function() {
-    $('body').on('change', '#ad-type', function(e) {
-        e.preventDefault();
-        displayMediaContent();
-    });
-
-    $('body').on('click', '.btn-delete-file', function(e) {
-        e.preventDefault();
-        if(!confirm('Вы действительно хотите удалить файл?')) return false;
-        let self = $(this);
-        let url = self.attr('href');
-        $.get(url, function(json) {
-            if(json.result) {
-                self.parents('.media-content-item').remove();
-                removeMediaContentBlock();
-            }
-        })
-    });
-
-    if (!$('#page-alias').val()) {
-        $(".page-name").keyup(function() {
-            $('#page-alias').val(slugify($(this).val()));
-        });
-    }
-
-    if (!$('#page-h1').val()) {
-        $(".page-name").keyup(function() {
-            $('#page-h1').val($(this).val());
-        });
-    }
 
     $(document).on('click', '.cabinet-view-tooltip', function(e) {
         return false;
@@ -43,11 +14,6 @@ $(document).ready(function() {
     })
     $(document).on('click', '.clinic_row', function(e) {
         e.preventDefault();
-        if($(this).hasClass('active')) {
-            $(this).removeClass('active');
-            toggleTicketRow();
-            return false;
-        }
         $('.clinic_row').removeClass('active')
         $(this).addClass('active');
         $('#appointment_list').html()
@@ -63,23 +29,16 @@ $(document).ready(function() {
         displayAlertModal(subject, href)
     });
     $(document).on('click', '.get_ticket_js', function(e) {
-        e.preventDefault();
-        let self = $(this);
-        $('#formticket-time_start').val(self.attr('data-time_start'))
-        $('#formticket-time_end').val(self.attr('data-time_end'))
-        $('#formticket-room').val(self.attr('data-room'))
-        $('#formticket-clinic_id').val(self.attr('data-clinic_id'))
-        $('#formticket-doctor_id').val(self.attr('data-doctor_id'))
-        $('#room-name').html(' в кабинет <b>' + self.attr('data-room') + '</b> на время <b>' + self.attr('data-time') + '</b>')
-
-        initPlugins();
-        $('#ticketModal').modal('show')
+        //if(!confirm('Вы действительно хотите добавить талон?')) return false;
+        let href = $(this).attr('href');
+        displayAlertModal('Вы действительно хотите добавить талон?', href, true)
+        return false;
     });
 
-    $(document).on('click', '#form-ticket button', function(e) {
+    /*$(document).on('click', '#form-ticket button', function(e) {
         e.preventDefault();
         submitTicketForm();
-    });
+    });*/
 
     $(document).on('click', '.ticket-action-print', function(e) {
         e.preventDefault();
@@ -91,4 +50,6 @@ $(document).ready(function() {
             CallPrint()
         }
     });
+
+    setActiveCabinet()
 })

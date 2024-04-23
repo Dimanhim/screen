@@ -43,7 +43,7 @@ class Cabinet extends BaseModel
     {
         return [
             [['name'], 'required', 'message' => 'Необходимо заполнить поле'],
-            [['clinic_id'], 'integer'],
+            [['clinic_id', 'show_tickets'], 'integer'],
             [['number', 'name', 'mis_id'], 'string', 'max' => 255],
         ];
     }
@@ -58,6 +58,7 @@ class Cabinet extends BaseModel
             'name' => 'Название',
             'clinic_id' => 'Корпус',
             'mis_id' => 'МИС ID',
+            'show_tickets' => 'Выводить в разделе талонов',
         ];
         return array_merge(parent::attributeLabels(), $attributes);
     }
@@ -99,7 +100,9 @@ class Cabinet extends BaseModel
         $data = [];
         if($clinics = Yii::$app->accesses->getClinics()) {
             foreach($clinics as $clinic) {
-                $data[$clinic['id']] = $clinic['title'];
+                if(isset($clinic['id']) and isset($clinic['title'])) {
+                    $data[$clinic['id']] = $clinic['title'];
+                }
             }
         }
         return $data;

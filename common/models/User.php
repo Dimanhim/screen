@@ -78,7 +78,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         if ($this->password) {
             $this->setPassword($this->password);
-            $this->generateAuthKey();
+            //$this->generateAuthKey();
         }
         return parent::beforeValidate();
     }
@@ -143,7 +143,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function passwordRepeatValidator($attribute, $params)
     {
-        if($this->password != $this->password_repeat) {
+        if($this->password and $this->password != $this->password_repeat) {
             $this->addError($attribute, 'Пароли не совпадают');
         }
     }
