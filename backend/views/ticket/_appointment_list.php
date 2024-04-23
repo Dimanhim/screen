@@ -66,7 +66,7 @@ use yii\helpers\Html;
                     <?php endif; ?>
                     <td>
                         <div class="ticket-actions">
-                            <?php if($ticketItem['ticket']) {
+                            <?php if($ticketItem['ticket'] and $model->cabinet) {
                                 echo Html::a('<i class="bi bi-printer"></i>', ['#'], ['class' => 'ticket-action-print', 'data-room' => $model->cabinet->number ? 'Кабинет №' . $model->cabinet->number : '', 'data-ticket' => $ticketItem['ticket']]);
                             } ?>
                         </div>

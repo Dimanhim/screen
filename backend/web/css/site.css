@@ -190,6 +190,17 @@ header nav form.d-flex {
     margin-left: auto;
 }
 
+.logo {
+    height: 55px;
+}
+
+.container-footer {
+    display: flex;
+}
+.container-footer p.float-end {
+    margin-left: auto;
+}
+
 /*
 BEGIN PRELOADER
 */

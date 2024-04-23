@@ -58,6 +58,7 @@ class FormTicket extends Model
         $model->mobile = Helpers::phoneFormat($this->mobile);
         $model->mis_id = $this->room;
         $model->setCabinetId();
+        $this->cabinet_id = $model->cabinet_id;
         $model->time_start = $this->time_start;
         $model->time_end = $this->time_end;
         $model->setTicket();

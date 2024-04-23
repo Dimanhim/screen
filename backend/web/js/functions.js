@@ -28,7 +28,6 @@ function showAppointmentList(clinic_id, mis_id, cabinet_id) {
         type: 'POST',
         data: {clinic_id: clinic_id, mis_id: mis_id, cabinet_id: cabinet_id},
         success: function (res) {
-            console.log('res list', res)
             if(res.result == 1 && res.html.length) {
                 container.html(res.html)
             }
@@ -51,13 +50,11 @@ function submitTicketForm() {
         type: 'POST',
         data: data,
         success: function (res) {
-            console.log('res', res)
-            console.log('res data', res.data)
             if(res.result == 1 && res.data) {
-                console.log('change', res.data)
+                console.log('res data', res.data)
                 $('#ticketModal').modal('hide');
                 $('#resultModal').modal('show');
-                showAppointmentList(res.data.clinic_id, res.data.room)
+                showAppointmentList(res.data.clinic_id, res.data.room, res.data.cabinet)
             }
             else if(res.message != null) {
                 displayErrorMessage(res.message)
@@ -141,5 +138,5 @@ function CallPrint() {
     WinPrint.document.close();
     WinPrint.focus();
     WinPrint.print();
-    WinPrint.close();
+    //WinPrint.close();
 }

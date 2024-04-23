@@ -31,7 +31,7 @@ AppAsset::register($this);
 <header>
     <?php
     NavBar::begin([
-        'brandLabel' => Helper::img('/img/logo.png'),
+        'brandLabel' => Helper::img('/img/logo.svg', ['class' => 'logo']),
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
@@ -88,9 +88,9 @@ AppAsset::register($this);
 <?= $this->render('//layouts/blocks/alert_modal') ?>
 
 <footer class="footer mt-auto py-3 text-muted">
-    <div class="container">
+    <div class="container container-footer">
         <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end"></p>
+        <p class="float-end">Разработано <a href="https://rnova.org" target="_blank">MadeForMed</a></p>
     </div>
 </footer>
 
