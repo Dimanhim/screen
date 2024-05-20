@@ -108,7 +108,12 @@ class BaseController extends Controller
     public function findModel($id)
     {
         if(array_key_exists('className', $this->behaviors()) && ($model = $this->getModel())) {
+            /*echo "<pre>";
+            print_r($model::findOne(['id' => $id]));
+            echo "</pre>";
+            exit;*/
             if(($findModel = $model::findOne(['id' => $id, 'is_active' => 1, 'deleted' => null])) !== null) {
+
                 return $findModel;
             }
         }

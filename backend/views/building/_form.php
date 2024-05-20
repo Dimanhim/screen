@@ -19,6 +19,7 @@ use yii\widgets\ActiveForm;
                 </div>
                 <div class="card-body">
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                    <?//= $form->field($model, 'clinic_id')->dropDownList($model->clinicList(), ['prompt' => '[Не выбрано]']) ?>
                 </div>
             </div>
         </div>

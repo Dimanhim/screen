@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use himiklab\sortablegrid\SortableGridBehavior;
+use yii\helpers\ArrayHelper;
 
 class BaseModel extends ActiveRecord
 {
@@ -94,5 +95,30 @@ class BaseModel extends ActiveRecord
             }
         }
         return $errorMessages ? implode(' ', $errorMessages) : false;
+    }
+
+    public function getClinicName()
+    {
+        if(!$this->hasAttribute('clinic_id')) return false;
+
+        if($clinics = Yii::$app->accesses->getClinics()) {
+            foreach($clinics as $clinic) {
+                if($this->clinic_id == $clinic['id']) return $clinic['title'];
+            }
+        }
+        return false;
+    }
+
+    public function clinicList()
+    {
+        $data = [];
+        if($clinics = Yii::$app->accesses->getClinics()) {
+            foreach($clinics as $clinic) {
+                if(isset($clinic['id']) and isset($clinic['title'])) {
+                    $data[$clinic['id']] = $clinic['title'];
+                }
+            }
+        }
+        return $data;
     }
 }

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\models\Cabinet;
+use common\models\Building;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Cabinet */
@@ -21,7 +22,7 @@ use common\models\Cabinet;
                 <div class="card-body">
                     <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-                    <?= $form->field($model, 'clinic_id')->dropDownList($model->clinicList(), ['prompt' => '[Не выбрано]']) ?>
+                    <?= $form->field($model, 'building_id')->dropDownList(Building::getList(), ['prompt' => '[Не выбрано]']) ?>
                     <?= $form->field($model, 'mis_id')->textInput() ?>
                     <?= $form->field($model, 'show_tickets')->checkbox() ?>
                 </div>

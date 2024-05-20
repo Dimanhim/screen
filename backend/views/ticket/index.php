@@ -23,11 +23,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tbody>
                 <?php if($cabinets) : ?>
                     <?php foreach($cabinets as $cabinet) : ?>
-                        <?php if(Yii::$app->accesses->hasAccess('ticket', $cabinet->clinic_id)) : ?>
-                        <tr class="clinic_row" data-user="<?= \Yii::$app->user->id ?>" data-clinic="<?= $cabinet->clinic_id ?>" data-mis_id="<?= $cabinet->mis_id ?>" data-cabinet_id="<?= $cabinet->id ?>">
+                        <?php if(Yii::$app->accesses->hasAccess('ticket', $cabinet->building_id)) : ?>
+                        <?php if(!$cabinet->building) continue; ?>
+                        <tr class="clinic_row" data-user="<?= \Yii::$app->user->id ?>" data-mis_id="<?= $cabinet->mis_id ?>" data-cabinet_id="<?= $cabinet->id ?>">
                             <td>
                                 <div class="clinic_row_clinic">
-                                    <?= $cabinet->clinicName ?>
+                                    <?= $cabinet->buildingName ?>
                                 </div>
                             </td>
                             <td>

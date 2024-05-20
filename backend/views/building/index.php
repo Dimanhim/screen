@@ -31,12 +31,28 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'name',
+            /*[
+                'attribute' => 'clinic_id',
+                'value' => function($data) {
+                    return $data->clinicName;
+                },
+                'filter' => $searchModel->clinicList()
+            ],*/
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{update} {delete}',
                 'buttons' => [
                     'view' => function($url, $model) {
-                        return Html::a(Building::getViewSvg(), ['../building/'.$model->id], ['target' => '_blanc']);
+                        return Html::a('<i class="bi bi-eye"></i>', ['../building/'.$model->id], ['target' => '_blanc']);
+                    },
+                    'delete' => function($url, $model) {
+                        return Html::a('<i class="bi bi-trash"></i>', ['building/delete', 'id' => $model->id],
+                            [
+                                'target' => '_blanc',
+                                'class' => 'alert-modal-building',
+                                'data-confirm-subject' => "{$model->name}",
+                            ]
+                        );
                     }
                 ],
             ],

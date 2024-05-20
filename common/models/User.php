@@ -26,6 +26,9 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+
+    const SCENARIO_CREATE = 'create';
+
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
@@ -78,7 +81,9 @@ class User extends ActiveRecord implements IdentityInterface
     {
         if ($this->password) {
             $this->setPassword($this->password);
-            //$this->generateAuthKey();
+            if(!$this->auth_key) {
+                $this->generateAuthKey();
+            }
         }
         return parent::beforeValidate();
     }
@@ -89,12 +94,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['name', 'username', 'password'], 'required'],
+            [['name', 'username'], 'required', 'message' => 'Необходимо заполнить поле'],
+            [['password', 'password_repeat'], 'required', 'on' => self::SCENARIO_CREATE, 'message' => 'Необходимо заполнить поле'],
             [['username'], 'unique', 'message' => 'Пользователь с таким логином уже зарегистрирован'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            //['auth_key', 'default', 'value' => ''],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             [['is_admin'], 'integer'],
-            [['sections_accesses', 'password_repeat'], 'safe'],
+            [['sections_accesses', 'password', 'password_repeat'], 'safe'],
             ['password_repeat', 'passwordRepeatValidator']
         ];
     }
@@ -123,7 +130,7 @@ class User extends ActiveRecord implements IdentityInterface
                         $userAccess = new UserAccess();
                         $userAccess->user_id = $this->id;
                         $userAccess->access_type = $access_type;
-                        $userAccess->clinic_id = $access_value;
+                        $userAccess->building_id = $access_value;
                         $userAccess->save();
                     }
                 }
@@ -143,7 +150,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function passwordRepeatValidator($attribute, $params)
     {
-        if($this->password and $this->password != $this->password_repeat) {
+        if($this->password !== $this->password_repeat) {
             $this->addError($attribute, 'Пароли не совпадают');
         }
     }
@@ -164,11 +171,11 @@ class User extends ActiveRecord implements IdentityInterface
         $list = [];
         if($this->accesses) {
             foreach($this->accesses as $access) {
-                if($access->clinic_id) {
-                    $list[$access->access_type][] = $access->clinic_id;
+                if($access->building_id) {
+                    $list[$access->access_type][] = $access->building_id;
                 }
                 else {
-                    $list[$access->access_type] = $access->clinic_id;
+                    $list[$access->access_type] = $access->building_id;
                 }
             }
         }

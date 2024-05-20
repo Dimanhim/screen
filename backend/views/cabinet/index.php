@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use himiklab\sortablegrid\SortableGridView;
 use common\models\Cabinet;
+use common\models\Building;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\CabinetSearch */
@@ -38,11 +39,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['class' => 'width-70']
             ],
             [
-                'attribute' => 'clinic_id',
+                'attribute' => 'building_id',
+                'format' => 'raw',
                 'value' => function($data) {
-                    return $data->clinicName;
+                    if($data->building) {
+                        return Html::a($data->building->name, ['building/view', 'id' => $data->building->id]);
+                    }
                 },
-                'filter' => $searchModel->clinicList()
+                'filter' => Building::getList()
             ],
             'name',
             'mis_id',

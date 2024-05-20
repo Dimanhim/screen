@@ -42,8 +42,8 @@ class Cabinet extends BaseModel
     public function rules()
     {
         return [
-            [['name'], 'required', 'message' => 'Необходимо заполнить поле'],
-            [['clinic_id', 'show_tickets'], 'integer'],
+            [['name', 'building_id'], 'required', 'message' => 'Необходимо заполнить поле'],
+            [['clinic_id', 'building_id', 'show_tickets'], 'integer'],
             [['number', 'name', 'mis_id'], 'string', 'max' => 255],
         ];
     }
@@ -56,19 +56,28 @@ class Cabinet extends BaseModel
         $attributes = [
             'number' => 'Номер',
             'name' => 'Название',
-            'clinic_id' => 'Корпус',
+            'clinic_id' => 'Клиника',
+            'building_id' => 'Корпус',
             'mis_id' => 'МИС ID',
             'show_tickets' => 'Выводить в разделе талонов',
         ];
         return array_merge(parent::attributeLabels(), $attributes);
     }
 
-    public function getAccesses()
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBuilding()
     {
-        return $this->hasOne(UserAccess::className(), ['clinic_id' => 'clinic_id']);
+        return $this->hasOne(Building::className(), ['id' => 'building_id']);
     }
 
-    public static function getList()
+    public function getAccesses()
+    {
+        return $this->hasOne(UserAccess::className(), ['building_id' => 'building_id']);
+    }
+
+    public function getList()
     {
         $cabinets = [];
         $cabinets['all'] = 'Все кабинеты';
@@ -84,29 +93,6 @@ class Cabinet extends BaseModel
     {
         return parent::findModels()->andWhere(['clinic_id' => $this]);
     }*/
-
-    public function getClinicName()
-    {
-        if($clinics = Yii::$app->accesses->getClinics()) {
-            foreach($clinics as $clinic) {
-                if($this->clinic_id == $clinic['id']) return $clinic['title'];
-            }
-        }
-        return false;
-    }
-
-    public function clinicList()
-    {
-        $data = [];
-        if($clinics = Yii::$app->accesses->getClinics()) {
-            foreach($clinics as $clinic) {
-                if(isset($clinic['id']) and isset($clinic['title'])) {
-                    $data[$clinic['id']] = $clinic['title'];
-                }
-            }
-        }
-        return $data;
-    }
 
     /**
      * @param $name
@@ -219,5 +205,13 @@ class Cabinet extends BaseModel
             'roomNumber' => $this->number,
             'mode' => $mode
         ];
+    }
+
+    public function getBuildingName()
+    {
+        if($this->building) {
+            return $this->building->name;
+        }
+        return false;
     }
 }

@@ -1,12 +1,12 @@
 
-function showAppointmentList(clinic_id, mis_id, cabinet_id) {
+function showAppointmentList(mis_id, cabinet_id) {
     setCookie('cabinet_id', cabinet_id, 3);
     addPreloader();
     let container = $('#appointment_list');
     $.ajax({
         url: '/ajax/get-appointment-list',
         type: 'POST',
-        data: {clinic_id: clinic_id, mis_id: mis_id, cabinet_id: cabinet_id},
+        data: { mis_id: mis_id, cabinet_id: cabinet_id},
         success: function (res) {
             if(res.result == 1 && res.html.length) {
                 container.html(res.html)

@@ -15,6 +15,7 @@ class AccessesComponent extends Component
     const TYPE_CLINIC   = 'clinic';
     const TYPE_CABINET  = 'cabinet';
     const TYPE_TICKETS  = 'ticket';
+    const TYPE_BUILDING = 'building';
 
     public $_accesses = [
 
@@ -56,9 +57,10 @@ class AccessesComponent extends Component
     {
         return [
             self::TYPE_USERS     => 'Пользователи',
-            self::TYPE_CLINIC    => 'Корпуса',
+            self::TYPE_CLINIC    => 'Клиники',
             self::TYPE_CABINET   => 'Кабинеты',
             self::TYPE_TICKETS   => 'Талоны',
+            self::TYPE_BUILDING  => 'Корпуса',
         ];
     }
 
@@ -105,14 +107,14 @@ class AccessesComponent extends Component
      * @param null $general_access
      * @return bool
      */
-    public function hasAccess($access_type, $clinic_id = null, $user_id = null, $general_access = null)
+    public function hasAccess($access_type, $building_id = null, $user_id = null, $general_access = null)
     {
         if(!$user_id) $user_id = Yii::$app->user->id;
         $access = $general_access
             ?
             UserAccess::find()->where(['user_id' => $user_id, 'access_type' => $access_type])->exists()
             :
-            UserAccess::find()->where(['user_id' => $user_id, 'access_type' => $access_type, 'clinic_id' => $clinic_id])->exists();
+            UserAccess::find()->where(['user_id' => $user_id, 'access_type' => $access_type, 'building_id' => $building_id])->exists();
         return $access;
     }
 
@@ -134,16 +136,18 @@ class AccessesComponent extends Component
     public function getAccesses()
     {
         // это дефолтный, нужно заполнить значениями юзера
-        $clinicData = [];
-        if($clinics = self::getClinicData()) {
-            foreach($clinics as $clinic) {
-                $clinicData[$clinic['id']] = [
-                    'id' => $clinic['id'],
-                    'name' => $clinic['title'],
+
+        $buildingData = [];
+        if($buildings = Building::findModels()->all()) {
+            foreach($buildings as $building) {
+                $buildingData[$building->id] = [
+                    'id' => $building->id,
+                    'name' => $building->name,
                     'checked' => false
                 ];
             }
         }
+
         return [
             self::TYPE_USERS => [
                 'access_type' => self::TYPE_USERS,
@@ -161,13 +165,13 @@ class AccessesComponent extends Component
                 'access_type' => self::TYPE_CABINET,
                 'access_name' => $this->typeName(self::TYPE_CABINET),
                 'checked' => false,
-                'access_values' => $clinicData,
+                'access_values' => $buildingData,
             ],
             self::TYPE_TICKETS => [
                 'access_type' => self::TYPE_TICKETS,
                 'access_name' => $this->typeName(self::TYPE_TICKETS),
                 'checked' => false,
-                'access_values' => $clinicData,
+                'access_values' => $buildingData,
             ],
         ];
     }

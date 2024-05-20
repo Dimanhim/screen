@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "buildings".
@@ -34,6 +35,7 @@ class Building extends BaseModel
         return array_merge(parent::rules(), [
             [['name'], 'required', 'message' => 'Необходимо заполнить поле'],
             [['name'], 'string', 'max' => 255],
+            [['clinic_id'], 'integer'],
         ]);
     }
 
@@ -44,6 +46,16 @@ class Building extends BaseModel
     {
         return array_merge(parent::attributeLabels(), [
             'name' => 'Название',
+            'clinic_id' => 'Клиника',
         ]);
+    }
+
+    /**
+     * @param string $attributeTo
+     * @return array
+     */
+    public static function getList($attributeTo = 'name')
+    {
+        return ArrayHelper::map(self::findModels()->asArray()->all(), 'id', $attributeTo);
     }
 }

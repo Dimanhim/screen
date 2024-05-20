@@ -17,16 +17,21 @@ $(document).ready(function() {
         $('.clinic_row').removeClass('active')
         $(this).addClass('active');
         $('#appointment_list').html()
-        let clinic_id = $(this).attr('data-clinic');
         let mis_id = $(this).attr('data-mis_id');
         let cabinet_id = $(this).attr('data-cabinet_id');
-        showAppointmentList(clinic_id, mis_id, cabinet_id)
+        showAppointmentList(mis_id, cabinet_id)
     });
     $(document).on('click', '.alert-modal', function(e) {
         e.preventDefault();
         let subject = $(this).attr('data-confirm-subject')
         let href = $(this).attr('href')
         displayAlertModal(subject, href)
+    });
+    $(document).on('click', '.alert-modal-building', function(e) {
+        e.preventDefault();
+        let subject = $(this).attr('data-confirm-subject')
+        let href = $(this).attr('href');
+        displayAlertModal('Вы собираетесь удалить ' + subject + '. Удаление корпуса приведет к удалению всех связанных кабинетов', href, true)
     });
     $(document).on('click', '.get_ticket_js', function(e) {
         //if(!confirm('Вы действительно хотите добавить талон?')) return false;
@@ -49,6 +54,12 @@ $(document).ready(function() {
             $('.js_print_ticket').html(ticket)
             CallPrint()
         }
+    });
+
+    $(document).on('click', '.btn-password-change', function(e) {
+        e.preventDefault();
+        $('.password-message').removeClass('active')
+        $('.password-block').addClass('active')
     });
 
     setActiveCabinet()

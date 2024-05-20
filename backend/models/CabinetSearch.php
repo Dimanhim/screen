@@ -20,7 +20,7 @@ class CabinetSearch extends Cabinet
     {
         return [
             [['id', 'mis_id', 'is_active', 'deleted', 'position', 'created_at', 'updated_at'], 'integer'],
-            [['unique_id', 'number', 'name', 'clinic_id'], 'safe'],
+            [['unique_id', 'number', 'name', 'clinic_id', 'building_id'], 'safe'],
         ];
     }
 
@@ -68,6 +68,7 @@ class CabinetSearch extends Cabinet
         $query->andFilterWhere([
             'cabinet.id' => $this->id,
             'cabinet.clinic_id' => $this->clinic_id,
+            'cabinet.building_id' => $this->building_id,
             'cabinet.mis_id' => $this->mis_id,
             'cabinet.is_active' => $this->is_active,
             'cabinet.deleted' => $this->deleted,

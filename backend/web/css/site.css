@@ -453,3 +453,13 @@ END PRELOADER
 .pos-receipt {
     display: none;
 }
+.password-block,
+.password-message
+{
+    display: none;
+}
+.password-block.active,
+.password-message.active
+{
+    display: block;
+}

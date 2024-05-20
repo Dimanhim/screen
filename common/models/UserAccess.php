@@ -33,7 +33,7 @@ class UserAccess extends BaseModel
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['user_id', 'clinic_id'], 'integer'],
+            [['user_id', 'clinic_id', 'building_id'], 'integer'],
             [['access_type'], 'string', 'max' => 255],
         ]);
     }
@@ -46,6 +46,7 @@ class UserAccess extends BaseModel
         return array_merge(parent::attributeLabels(), [
             'user_id' => 'User ID',
             'clinic_id' => 'Clinic ID',
+            'building_id' => 'Building ID',
         ]);
     }
 
@@ -55,5 +56,13 @@ class UserAccess extends BaseModel
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBuilding()
+    {
+        return $this->hasOne(Building::className(), ['id' => 'building_id']);
     }
 }

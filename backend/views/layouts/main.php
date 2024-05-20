@@ -42,9 +42,9 @@ AppAsset::register($this);
     if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_USERS) or User::isAdmin()) {
         $menuItems[] = ['label' => 'Пользователи', 'url' => ['/user/index']];
     }
-    /*if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_BUILDING)) {
+    //if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_BUILDING)) {
         $menuItems[] = ['label' => 'Корпуса', 'url' => ['/building/index']];
-    }*/
+    //}
     if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_CABINET, null, null, true)) {
         $menuItems[] = ['label' => 'Кабинеты', 'url' => ['/cabinet/index']];
     }

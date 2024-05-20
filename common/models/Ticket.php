@@ -125,10 +125,9 @@ class Ticket extends BaseModel
 
     public function ticketList()
     {
-        if(!$this->clinic_id and !$this->mis_id) return false;
+        if(!$this->mis_id) return false;
 
         $params_appointments = [
-            'clinic_id' => $this->clinic_id,
             'date_from' => $this->_today_start,
             'date_to' => $this->_today_end,
             'room' => $this->mis_id,
@@ -167,8 +166,8 @@ class Ticket extends BaseModel
     {
         if(!$appointmentsData) return [];
         foreach($appointmentsData as $appointmentItem) {
-            if(!isset($appointmentItem['clinic_id']) or !isset($scheduleItem['clinic_id']) or !isset($appointmentItem['room']) or !isset($scheduleItem['room'])) continue;
-            if($appointmentItem['clinic_id'] == $scheduleItem['clinic_id'] and $appointmentItem['room'] == $scheduleItem['room']) {
+            if(!isset($appointmentItem['room']) or !isset($scheduleItem['room'])) continue;
+            if($appointmentItem['room'] == $scheduleItem['room']) {
                 $app_time_start = strtotime($appointmentItem['time_start']);
                 $app_time_end = strtotime($appointmentItem['time_end']);
 

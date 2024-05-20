@@ -39,7 +39,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()->where(['is_active' => 1, 'deleted' => null])->orderBy(['position' => SORT_ASC]);
 
         // add conditions that should always apply here
 

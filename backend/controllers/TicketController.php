@@ -36,12 +36,11 @@ class TicketController extends BaseController
         ]);
     }
 
-    public function actionGenerateTicket($clinic_id, $room, $time_start, $time_end, $patient_name, $mobile, $appointment_id)
+    public function actionGenerateTicket($room, $time_start, $time_end, $patient_name, $mobile, $appointment_id)
     {
         $model = new Ticket();
         $model->setTicket();
-        $model->clinic_id = $clinic_id;
-        $model->mis_id = $clinic_id;
+        $model->mis_id = $room;
         $model->time_start = $time_start;
         $model->time_end = $time_end;
         $model->patient_name = $patient_name;

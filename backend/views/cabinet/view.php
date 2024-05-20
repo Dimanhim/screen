@@ -31,13 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'number',
+            'name',
             [
-                'attribute' => 'clinic_id',
+                'attribute' => 'building_id',
+                'format' => 'raw',
                 'value' => function($data) {
-                    return $data->clinicName;
+                    if($data->building) {
+                        return Html::a($data->building->name, ['building/view', 'id' => $data->building->id]);
+                    }
                 }
             ],
-            'name',
             'mis_id',
             [
                 'attribute' => 'show_tickets',

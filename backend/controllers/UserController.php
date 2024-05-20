@@ -62,7 +62,7 @@ class UserController extends BaseController
      */
     public function actionCreate()
     {
-        $model = new User();
+        $model = new User(['scenario' => User::SCENARIO_CREATE]);
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {

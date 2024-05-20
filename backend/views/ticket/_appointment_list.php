@@ -52,7 +52,6 @@ use yii\helpers\Url;
                                 <a
                                     href="<?= Url::to([
                                         'ticket/generate-ticket',
-                                        'clinic_id' => $ticketItem['clinic_id'],
                                         'room' => $ticketItem['room'],
                                         'time_start' =>  $ticketItem['time_start'],
                                         'time_end' =>  $ticketItem['time_end'],
