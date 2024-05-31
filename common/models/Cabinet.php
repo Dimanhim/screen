@@ -195,16 +195,15 @@ class Cabinet extends BaseModel
 
     /**
      * @param string $mode
-     * @return array
+     * @return string
      */
-    public function getRoomUrl(string $mode) : array
+    public function getRoomUrl(string $mode) : string
     {
-        return [
-            '../screens/',
-            'roomId' => $this->unique_id,
-            'roomNumber' => $this->number,
-            'mode' => $mode
-        ];
+        return
+            $_ENV['FRONTEND_URL'] .
+            '/screens?roomId=' . $this->unique_id .
+            '&roomNumber=' . $this->number .
+            '&mode=' . $mode;
     }
 
     public function getBuildingName()
