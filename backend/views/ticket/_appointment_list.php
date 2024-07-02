@@ -75,7 +75,7 @@ use yii\helpers\Url;
                     <td>
                         <div class="ticket-actions">
                             <?php if($ticketName['print'] and $model->cabinet) {
-                                echo Html::a('<i class="bi bi-printer"></i>', ['#'], ['class' => 'ticket-action-print', 'data-room' => $ticketItem['room'] ? 'Кабинет № ' . $model->cabinet->id : '', 'data-ticket' => $ticketName['name']]);
+                                echo Html::a('<i class="bi bi-printer"></i>', ['#'], ['class' => 'ticket-action-print', 'data-room' => $ticketItem['room'] ? 'Кабинет № ' . $model->cabinet->number : '', 'data-ticket' => $ticketName['name']]);
                             } ?>
                         </div>
                     </td>
