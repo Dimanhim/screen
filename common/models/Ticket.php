@@ -231,4 +231,32 @@ class Ticket extends BaseModel
         $this->setTicketLetter();
         $this->setTicketNumber();
     }
+
+    /**
+     *
+     */
+    public function sendWebHook()
+    {
+        $url = 'http://192.168.1.39:3000/wh-32ndaylk192jn2l';
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => 'room='.$this->ticket,
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        file_put_contents('tickets-log.txt', date('d.m.Y H:i:s').' response - '.print_r($response, true)."\n", FILE_APPEND);
+        //return $response;
+    }
 }

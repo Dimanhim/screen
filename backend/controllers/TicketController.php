@@ -50,6 +50,7 @@ class TicketController extends BaseController
             $model->cabinet_id = $cabinet->id;
         }
         if($model->save()) {
+            $model->sendWebHook();
             \Yii::$app->session->setFlash('success', 'Талон ' . $model->ticket . ' успешно добавлен');
         }
         else {
