@@ -55,6 +55,6 @@ class TicketController extends BaseController
         else {
             \Yii::$app->session->setFlash('error', 'Ошибка создания талона');
         }
-        return $this->redirect(\Yii::$app->request->referrer);
+        return $this->redirect(['ticket/index']);
     }
 }
