@@ -237,7 +237,7 @@ class Ticket extends BaseModel
      */
     public function sendWebHook()
     {
-        $url = 'http://192.168.1.39:3000/wh-32ndaylk192jn2l';
+        $url = $_ENV['WEBHOOK_URL'];
 
         $curl = curl_init();
 
@@ -250,13 +250,15 @@ class Ticket extends BaseModel
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => 'room='.$this->ticket,
+            CURLOPT_POSTFIELDS => 'data[0][room]='.$this->mis_id,
         ));
 
         $response = curl_exec($curl);
 
         curl_close($curl);
-        file_put_contents('tickets-log.txt', date('d.m.Y H:i:s').' response - '.print_r($response, true)."\n", FILE_APPEND);
+        if ($_ENV['WEBHOOK_DEBUG']) {
+            file_put_contents('tickets-log.txt', date('d.m.Y H:i:s').' response - '.print_r($response, true)."\n", FILE_APPEND);
+        }
         //return $response;
     }
 }

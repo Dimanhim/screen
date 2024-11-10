@@ -18,6 +18,9 @@
    FRONTEND_URL = 'https://example.ru' - адрес панели
    MIS_REQUEST_API_URL = 'https://rnova.org' - урл для подключения
    MIS_API_KEY = 'your_api_key' - ключ АПИ
+   WEBHOOK_URL = '' - URL для вебхука обновления экранов (аналогичен тому, что прописывается в МИС на событие изменения визита) 
+   WEBHOOK_DEBUG = false - запись лога исходящих запросов к вебхуку
+
 8) пишем параметры подключения к базе данных (из п.2) в файле common/config/main-local.php
    host
    dbname
