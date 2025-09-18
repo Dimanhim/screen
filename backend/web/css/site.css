@@ -207,7 +207,7 @@ BEGIN PRELOADER
 .loader {
     border: 16px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 8px solid #774d93;
+    border-top: 8px solid #81C326;
     width: 80px;
     height: 80px;
     -webkit-animation: spin 1s linear infinite; /* Safari */
@@ -215,8 +215,8 @@ BEGIN PRELOADER
 }
 .loader-block {
     position: fixed;
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     margin: auto;
     z-index: 999;
     left: 0;

@@ -12,7 +12,7 @@ class m240423_080956_extend_cabinet extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn('cabinet', 'show_tickets', $this->tinyInteger(1));
+        $this->addColumn(Yii::$app->db->tablePrefix . 'cabinet', 'show_tickets', $this->tinyInteger(1));
     }
 
     /**

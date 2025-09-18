@@ -16,15 +16,12 @@ use common\models\Building;
     <div class="row">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    Основная информация
-                </div>
                 <div class="card-body">
                     <?= $form->field($model, 'number')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                     <?= $form->field($model, 'building_id')->dropDownList(Building::getList(), ['prompt' => '[Не выбрано]']) ?>
                     <?= $form->field($model, 'mis_id')->textInput() ?>
-                    <?= $form->field($model, 'show_tickets')->checkbox() ?>
+                    <?= $form->field($model, 'show_tickets')->checkbox(['label' => Html::tag('span','Выводить в разделе талонов'), 'labelOptions' => ['class' => 'ui-checkbox']]) ?>
                 </div>
             </div>
         </div>

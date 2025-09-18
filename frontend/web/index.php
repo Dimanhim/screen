@@ -18,5 +18,4 @@ $config = yii\helpers\ArrayHelper::merge(
 $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__, '../../.env');
 
 $dotenv->load();
-
 (new yii\web\Application($config))->run();

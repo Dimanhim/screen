@@ -33,7 +33,7 @@ class Cabinet extends BaseModel
      */
     public static function tableName()
     {
-        return 'cabinet';
+        return '{{%cabinet}}';
     }
 
     /**

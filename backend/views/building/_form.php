@@ -14,12 +14,10 @@ use yii\widgets\ActiveForm;
     <div class="row">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    Основная информация
-                </div>
                 <div class="card-body">
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-                    <?//= $form->field($model, 'clinic_id')->dropDownList($model->clinicList(), ['prompt' => '[Не выбрано]']) ?>
+                    <!--<?//= $form->field($model, 'clinic_id')->dropDownList($model->clinicList(), ['prompt' => '[Не выбрано]']) ?>-->
+
                 </div>
             </div>
         </div>

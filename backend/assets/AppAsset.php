@@ -27,12 +27,13 @@ class AppAsset extends AssetBundle
     public static function getCss()
     {
         return [
+            'css/awesome/line-awesome-font-awesome.min.css',
             'css/bootstrap-icons.css',
-            'css/font-awesome.min.css',
             'css/bootstrap-datepicker.min.css',
             'css/toastr.min.css',
             'css/ticket_style.css',
             'css/site.css?v='.mt_rand(1000,10000),
+            'css/app.css?v='.mt_rand(1000,10000),
         ];
     }
 

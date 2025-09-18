@@ -12,7 +12,7 @@ class m240424_115715_extend_cabinet_building extends Migration
      */
     public function safeUp()
     {
-        $sql = 'ALTER TABLE cabinet ADD building_id INT NULL DEFAULT NULL AFTER clinic_id';
+        $sql = 'ALTER TABLE ' . Yii::$app->db->tablePrefix . 'cabinet ADD building_id INT NULL DEFAULT NULL AFTER clinic_id';
         Yii::$app->db->createCommand($sql)->queryAll();
     }
 

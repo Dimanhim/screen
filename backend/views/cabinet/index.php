@@ -15,77 +15,76 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cabinet-index">
 
-    <div class="row">
-        <div class="col-6">
+    <div class="card">
+        <div class="card-header">
             <h1><?= Html::encode($this->title) ?></h1>
         </div>
-        <div class="col-6">
-            <div class="btn-container">
-                <?= Html::a('<i class="bi bi-plus"></i> Добавить', ['create'], ['class' => 'btn btn-primary float-right']) ?>
-            </div>
+        <div class="card-body">
+            <p>
+                <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
+            </p>
+            <?= SortableGridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'columns' => [
+                    [
+                        'attribute' => 'id',
+                        'headerOptions' => ['class' => 'width-70']
+                    ],
+                    [
+                        'attribute' => 'number',
+                        'headerOptions' => ['class' => 'width-70']
+                    ],
+                    [
+                        'attribute' => 'building_id',
+                        'format' => 'raw',
+                        'value' => function($data) {
+                            if($data->building) {
+                                return Html::a($data->building->name, ['building/view', 'id' => $data->building->id]);
+                            }
+                        },
+                        'filter' => Building::getList()
+                    ],
+                    'name',
+                    'mis_id',
+                    [
+                        'attribute' => 'show_tickets',
+                        'value' => function($data) {
+                            return $data->show_tickets ? 'Да' : 'Нет';
+                        }
+                    ],
+                    [
+                        'class' => 'yii\grid\ActionColumn',
+                        'template' => '{view} {update} {delete}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a('<i class="bi bi-eye"></i>', ['../room_id/'.$model->id],
+                                    [
+                                        'target' => '_blanc',
+                                        'disabled' => true,
+                                        'class' => 'cabinet-view-tooltip',
+                                        'title' => $model->tooltipText()
+
+                                    ]
+                                );
+                            },
+                            'update' => function($url, $model) {
+                                return Html::a('<i class="bi bi-pencil"></i>', ['cabinet/update', 'id' => $model->id]
+                                );
+                            },
+                            'delete' => function($url, $model) {
+                                return Html::a('<i class="bi bi-trash"></i>', ['cabinet/delete', 'id' => $model->id],
+                                    [
+                                        'target' => '_blanc',
+                                        'class' => 'alert-modal',
+                                        'data-confirm-subject' => 'кабинет "'.$model->name.'"',
+                                    ]
+                                );
+                            }
+                        ],
+                    ],
+                ],
+            ]); ?>
         </div>
     </div>
-
-    <?= SortableGridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            [
-                'attribute' => 'id',
-                'headerOptions' => ['class' => 'width-70']
-            ],
-            [
-                'attribute' => 'number',
-                'headerOptions' => ['class' => 'width-70']
-            ],
-            [
-                'attribute' => 'building_id',
-                'format' => 'raw',
-                'value' => function($data) {
-                    if($data->building) {
-                        return Html::a($data->building->name, ['building/view', 'id' => $data->building->id]);
-                    }
-                },
-                'filter' => Building::getList()
-            ],
-            'name',
-            'mis_id',
-            [
-                'attribute' => 'show_tickets',
-                'value' => function($data) {
-                    return $data->show_tickets ? 'Да' : 'Нет';
-                }
-            ],
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{view} {update} {delete}',
-                'buttons' => [
-                    'view' => function($url, $model) {
-                        return Html::a('<i class="bi bi-eye"></i>', ['../room_id/'.$model->id],
-                            [
-                                'target' => '_blanc',
-                                'disabled' => true,
-                                'class' => 'cabinet-view-tooltip',
-                                'title' => $model->tooltipText()
-
-                            ]
-                        );
-                    },
-                    'update' => function($url, $model) {
-                        return Html::a('<i class="bi bi-pencil"></i>', ['cabinet/update', 'id' => $model->id]
-                        );
-                    },
-                    'delete' => function($url, $model) {
-                        return Html::a('<i class="bi bi-trash"></i>', ['cabinet/delete', 'id' => $model->id],
-                            [
-                                'target' => '_blanc',
-                                'class' => 'alert-modal',
-                                'data-confirm-subject' => 'кабинет "'.$model->name.'"',
-                            ]
-                        );
-                    }
-                ],
-            ],
-        ],
-    ]); ?>
 </div>

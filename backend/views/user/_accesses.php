@@ -21,8 +21,10 @@ use common\components\AccessesComponent;
                                         $checked = $access_value['checked'] ? ' checked="checked"' : '';
                                     ?>
                                     <li>
-                                        <input id="<?= $id ?>" type="checkbox" name="User[sections_accesses][<?= $accessItem['access_type'] ?>][]" value="<?= $access_value['id'] ?>" <?= $checked ?>>
-                                        <label for="<?= $id ?>"><?= $access_value['name'] ?></label>
+                                        <label for="<?= $id ?>" class="ui-checkbox">
+                                            <input id="<?= $id ?>" type="checkbox" name="User[sections_accesses][<?= $accessItem['access_type'] ?>][]" value="<?= $access_value['id'] ?>" <?= $checked ?>>
+                                            <span><?= $access_value['name'] ?></span>
+                                        </label>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
@@ -32,8 +34,10 @@ use common\components\AccessesComponent;
                             $checked = $accessItem['checked'] ? ' checked="checked"' : '';
                         ?>
                         <div class="form-group">
-                            <input id="type_<?= $accessItem['access_type'] ?>" type="checkbox" name="User[sections_accesses][<?= $accessItem['access_type'] ?>]" value="1" <?= $checked ?>>
-                            <label for="type_<?= $accessItem['access_type'] ?>"><?= $accessItem['access_name'] ?></label>
+                            <label for="type_<?= $accessItem['access_type'] ?>" class="ui-checkbox">
+                                <input id="type_<?= $accessItem['access_type'] ?>" type="checkbox" name="User[sections_accesses][<?= $accessItem['access_type'] ?>]" value="1" <?= $checked ?>>
+                                <span><?= $accessItem['access_name'] ?></span>
+                            </label>
                         </div>
                     <?php endif; ?>
                 <?php endforeach; ?>

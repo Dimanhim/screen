@@ -34,10 +34,11 @@ class AjaxController extends Controller
             'mis_id' => Yii::$app->request->post('mis_id'),
             'cabinet_id' => Yii::$app->request->post('cabinet_id')
         ]);
-        if($html = $model->getAppointmentListHtml()) {
-            $this->res['result'] = 1;
-            $this->res['html'] = $html;
-        }
+        $this->res['result'] = 1;
+        $this->res['html'] = $this->renderPartial('//ticket/_appointment_list', [
+            'model' => $model,
+            'list' => true,
+        ]);
 
         return $this->res;
     }

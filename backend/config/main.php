@@ -11,7 +11,7 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'name' => 'Прайм Медикал',
+    'name' => 'Renovatio Demo',
     'timeZone' => 'Europe/Saratov',
     'components' => [
         'request' => [

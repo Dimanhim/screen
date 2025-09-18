@@ -13,49 +13,47 @@ $this->title = 'Корпуса';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cabinet-index">
-
-    <div class="row">
-        <div class="col-6">
+    <div class="card">
+        <div class="card-header">
             <h1><?= Html::encode($this->title) ?></h1>
         </div>
-        <div class="col-6">
-            <div class="btn-container">
-                <?= Html::a('<i class="bi bi-plus"></i> Добавить', ['create'], ['class' => 'btn btn-primary float-right']) ?>
-            </div>
+        <div class="card-body">
+            <p>
+                <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
+            </p>
+            <?= SortableGridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+                    'name',
+                    /*[
+                        'attribute' => 'clinic_id',
+                        'value' => function($data) {
+                            return $data->clinicName;
+                        },
+                        'filter' => $searchModel->clinicList()
+                    ],*/
+                    [
+                        'class' => 'yii\grid\ActionColumn',
+                        'template' => '{update} {delete}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a('<i class="bi bi-eye"></i>', ['../building/'.$model->id], ['target' => '_blanc']);
+                            },
+                            'delete' => function($url, $model) {
+                                return Html::a('<i class="bi bi-trash"></i>', ['building/delete', 'id' => $model->id],
+                                    [
+                                        'target' => '_blanc',
+                                        'class' => 'alert-modal-building',
+                                        'data-confirm-subject' => "{$model->name}",
+                                    ]
+                                );
+                            }
+                        ],
+                    ],
+                ],
+            ]); ?>
         </div>
     </div>
-
-    <?= SortableGridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            'name',
-            /*[
-                'attribute' => 'clinic_id',
-                'value' => function($data) {
-                    return $data->clinicName;
-                },
-                'filter' => $searchModel->clinicList()
-            ],*/
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{update} {delete}',
-                'buttons' => [
-                    'view' => function($url, $model) {
-                        return Html::a('<i class="bi bi-eye"></i>', ['../building/'.$model->id], ['target' => '_blanc']);
-                    },
-                    'delete' => function($url, $model) {
-                        return Html::a('<i class="bi bi-trash"></i>', ['building/delete', 'id' => $model->id],
-                            [
-                                'target' => '_blanc',
-                                'class' => 'alert-modal-building',
-                                'data-confirm-subject' => "{$model->name}",
-                            ]
-                        );
-                    }
-                ],
-            ],
-        ],
-    ]); ?>
 </div>

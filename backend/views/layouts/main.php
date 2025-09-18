@@ -29,13 +29,31 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 <div class="loader-block"></div>
 <header>
+    <div class="header-company">
+        <a href="/" class="logo">
+            <img src="/img/logo.png" alt="Логотип">
+        </a>
+        <div class="header-company-text">
+            <p class="header-company-text-service">Сервис экранов</p>
+        </div>
+        <div class="header-company-text">
+            <p class="header-company-text-name"><?= Yii::$app->name ?></p>
+        </div>
+        <div class="header-company-text header-company-logout">
+            <a href="/site/logout" style="padding: 4px 10px;">
+                <span class="hidden-xs head-user-name fa fa-sign-out" style="font-size: 20px;"></span>
+            </a>
+        </div>
+    </div>
     <?php
     NavBar::begin([
-        'brandLabel' => Helper::img('/img/' . Yii::$app->params['logoPath'], ['class' => 'logo']),
+        //'brandLabel' => Helper::img('/img/' . Yii::$app->params['logoPath'], ['class' => 'logo']),
+        'brandLabel' => false,
         'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
+        /*'options' => [
             'class' => 'navbar navbar-expand-md navbar-dark bg-dark fixed-top',
-        ],
+        ],*/
+        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
     ]);
 
     $menuItems = [];
@@ -45,10 +63,10 @@ AppAsset::register($this);
     //if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_BUILDING)) {
         $menuItems[] = ['label' => 'Корпуса', 'url' => ['/building/index']];
     //}
-    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_CABINET, null, null, true)) {
+    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_CABINET, null, null, true) or User::isAdmin()) {
         $menuItems[] = ['label' => 'Кабинеты', 'url' => ['/cabinet/index']];
     }
-    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_TICKETS, null, null, true)) {
+    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_TICKETS, null, null, true) or User::isAdmin()) {
         $menuItems[] = ['label' => 'Талоны', 'url' => ['/ticket/index']];
     }
 
@@ -62,13 +80,6 @@ AppAsset::register($this);
     ]);
     if (Yii::$app->user->isGuest) {
         echo Html::tag('div',Html::a('Login',['/site/login'],['class' => ['btn btn-link login text-decoration-none']]),['class' => ['d-flex']]);
-    } else {
-        echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
-            . Html::submitButton(
-                'Выход (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout text-decoration-none']
-            )
-            . Html::endForm();
     }
     NavBar::end();
     ?>
@@ -78,7 +89,7 @@ AppAsset::register($this);
     <div class="container">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-            'homeLink' => false
+            'homeLink' => ['label' => 'Главная', 'url' => '/']
         ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>
@@ -90,7 +101,6 @@ AppAsset::register($this);
 <footer class="footer mt-auto py-3 text-muted">
     <div class="container container-footer">
         <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end">Разработано <a href="https://rnova.org" target="_blank">MadeForMed</a></p>
     </div>
 </footer>
 

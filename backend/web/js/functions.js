@@ -10,15 +10,13 @@ function showAppointmentList(mis_id, cabinet_id) {
         success: function (res) {
             if(res.result == 1 && res.html.length) {
                 container.html(res.html)
+                removePreloader()
             }
-            removePreloader()
         },
         error: function () {
             console.log('Error!');
-            removePreloader();
         }
     });
-    removePreloader()
 }
 
 /*
@@ -78,14 +76,13 @@ function displayAlertModal(subject, href, replaceTitle = false) {
 }
 
 function addPreloader() {
+    $('.loader-block').addClass('loader');
     setTimeout(function() {
-        $('.loader-block').addClass('loader');
-    }, 500);
+        removePreloader();
+    }, 10000);
 }
 function removePreloader() {
-    setTimeout(function() {
-        $('.loader-block').removeClass('loader');
-    }, 500)
+    $('.loader-block').removeClass('loader');
 }
 
 function displaySuccessMessage(message) {

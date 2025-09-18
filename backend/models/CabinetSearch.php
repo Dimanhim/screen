@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use common\components\AccessesComponent;
+use common\models\User;
 use common\models\UserAccess;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -44,10 +45,12 @@ class CabinetSearch extends Cabinet
     {
         $query = Cabinet::find()->where(['is', 'cabinet.deleted', null])->andWhere(['cabinet.is_active' => 1]);
         $query->joinWith(['accesses']);
-        $query->andWhere([
-            'user_accesses.access_type' => AccessesComponent::TYPE_CABINET,
-            'user_accesses.user_id' => \Yii::$app->user->id,
-        ]);
+        if(!User::isAdmin()) {
+            $query->andWhere([
+                'user_accesses.access_type' => AccessesComponent::TYPE_CABINET,
+                'user_accesses.user_id' => \Yii::$app->user->id,
+            ]);
+        }
 
         // add conditions that should always apply here
 
