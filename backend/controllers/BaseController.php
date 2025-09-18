@@ -43,6 +43,7 @@ class BaseController extends Controller
         elseif($action->id == 'signup') {
             return $this->redirect(['/cabinet/index']);
         }
+        Yii::$app->app->setClinics();
         return parent::beforeAction($action);
     }
     /**

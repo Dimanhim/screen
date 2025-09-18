@@ -4,6 +4,7 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'language' => 'ru-RU',
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         'cache' => [
@@ -17,6 +18,9 @@ return [
         ],
         'api' => [
             'class' => 'common\components\Api',
+        ],
+        'app' => [
+            'class' => 'common\components\AppComponent',
         ],
     ],
 ];

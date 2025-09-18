@@ -11,6 +11,7 @@ use common\models\Building;
 
 $this->title = 'Корпуса';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="cabinet-index">
     <div class="card">
@@ -27,13 +28,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
                     'name',
-                    /*[
+                    [
                         'attribute' => 'clinic_id',
                         'value' => function($data) {
-                            return $data->clinicName;
+                            return $data->clinicTitle;
                         },
-                        'filter' => $searchModel->clinicList()
-                    ],*/
+                        'filter' => Yii::$app->app->getClinicList()
+                    ],
                     [
                         'class' => 'yii\grid\ActionColumn',
                         'template' => '{update} {delete}',

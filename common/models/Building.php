@@ -58,4 +58,16 @@ class Building extends BaseModel
     {
         return ArrayHelper::map(self::findModels()->asArray()->all(), 'id', $attributeTo);
     }
+
+    public function getClinic()
+    {
+        Yii::$app->app->setClinicById($this->clinic_id);
+        return Yii::$app->app->getClinic();
+    }
+
+    public function getClinicTitle()
+    {
+        Yii::$app->app->setClinicById($this->clinic_id);
+        return Yii::$app->app->getClinicTitle();
+    }
 }

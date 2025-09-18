@@ -16,7 +16,8 @@ use yii\widgets\ActiveForm;
             <div class="card">
                 <div class="card-body">
                     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-                    <!--<?//= $form->field($model, 'clinic_id')->dropDownList($model->clinicList(), ['prompt' => '[Не выбрано]']) ?>-->
+                    <?= $form->field($model, 'clinic_id')->dropDownList(Yii::$app->app->getClinicList(), ['prompt' => '[Не выбрано]']) ?>
+                    <?= $form->field($model, 'is_active')->checkbox(['label' => Html::tag('span','Активность'), 'labelOptions' => ['class' => 'ui-checkbox']]) ?>
 
                 </div>
             </div>

@@ -40,7 +40,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => 'raw',
                         'value' => function($data) {
                             if($data->building) {
-                                return Html::a($data->building->name, ['building/view', 'id' => $data->building->id]);
+                                $name = $data->building->name;
+                                if($clinic = $data->building->clinic) {
+                                    $name .= '<br>';
+                                    $name .= "({$clinic['title']})";
+                                }
+                                return Html::a($name, ['building/update', 'id' => $data->building->id]);
                             }
                         },
                         'filter' => Building::getList()
