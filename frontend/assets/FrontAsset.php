@@ -13,7 +13,7 @@ class FrontAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
 
-    private $directoryPath = 'gui';
+    private $directoryPath = 'screens';
     private $cssDir;
     private $jsDir;
 
@@ -35,8 +35,26 @@ class FrontAsset extends AssetBundle
 
     public function setFiles()
     {
+        $this->css = $this->getCss();
+        $this->js = $this->getJs();
+        return;
         $this->css = $this->getCssFile();
         $this->js = $this->getJsFile();
+    }
+
+    public function getCss()
+    {
+        return [
+            '/'.$this->directoryPath.'/css/main.css?v='.mt_rand(1000,10000),
+        ];
+    }
+
+    public function getJs()
+    {
+        return [
+            '/'.$this->directoryPath.'/js/alpineDev.min.js',
+            '/'.$this->directoryPath.'/js/client.js',
+        ];
     }
 
     public function getCssFile()

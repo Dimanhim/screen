@@ -42,8 +42,13 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-
-                '/tablet/<id:\d+>' => 'tablet/index',
+                'screens' => 'screens/index',
+                //'screens' => 'screens/index',
+                //'/screens/<roomId:\d+>' => 'screens/index',
+                //'screens/' => 'site/screens',
+                //'screens/?<id:\d+>' => 'screens/index',
+                //'<action:(.*)>' => 'screens/<action>',
+                //'<controller:\w+>/<action:\w+>' => '<controller>/<action>'
             ],
         ],
 

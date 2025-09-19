@@ -201,7 +201,7 @@ class Cabinet extends BaseModel
     {
         return
             $_ENV['FRONTEND_URL'] .
-            '/screens?roomId=' . $this->unique_id .
+            '/screens/?roomId=' . $this->unique_id .
             '&roomNumber=' . $this->number .
             '&mode=' . $mode;
     }
