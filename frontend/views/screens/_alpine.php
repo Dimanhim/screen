@@ -8,8 +8,6 @@
             roomName: null,
             avatar: null,
             professionsText: null,
-            messageTop: null,
-            messageBottom: null,
 
             footerText: null,
             roomStatuses: ['empty', 'free', 'wait', 'busy'],
@@ -19,13 +17,15 @@
             showInviteScreen: false,
             inviteScreenTimeout: 5000,
             invite: {                                           // инфа по приглашению audio
-                messageTop: null,
-                messageBottom: null,
+                messageTop: 'Пациент с талоном',
+                messageBottom: 'Л001',
                 audio: null
             },
 
             //roomInfo: null,                                     // объект - инфа по комнате
             //roomSequence: null,                                 // массив визитов
+            busySequence: null,
+            waitSequence: null,
 
             roomInfo: {
                 name: 'Кабинет офтальмолога',
@@ -35,21 +35,24 @@
             roomSequence: [
                 {
                     id: 1111,
-                    status_id: 2,
+                    status_id: 4,
                     time_start: '15:00',
                     patientNumber: '555',
+                    ticketCode: 'Л001',
                 },
                 {
                     id: 2222,
-                    status_id: 5,
+                    status_id: 3,
                     time_start: '15:30',
                     patientNumber: '444',
+                    ticketCode: 'Л002',
                 },
                 {
                     id: 5555,
-                    status_id: 5,
+                    status_id: 4,
                     time_start: '16:00',
                     patientNumber: '333',
+                    ticketCode: 'Л003',
                 },
             ],
 
@@ -59,16 +62,22 @@
                     this.setRoomStatusEmpty();
                 }
                 else if(this.roomInfo && !this.hasSequence()) {
-                    console.log('setRoomStatusFree')
                     this.setRoomStatusFree();
                 }
                 else if(this.hasBusy()) {
-                    console.log('setRoomStatusBusy')
                     this.setRoomStatusBusy();
                 }
                 else {
                     this.setRoomStatusWait();
                 }
+                this.setBusySequence();
+                this.setWaitSequence();
+            },
+            setBusySequence() {
+                this.busySequence = this.roomSequence.filter((item) => item.status_id === 3);
+            },
+            setWaitSequence() {
+                this.waitSequence = this.roomSequence.filter((item) => item.status_id === 4);
             },
             isBusy() {
                 return this.roomStatus === 'busy';
@@ -149,8 +158,8 @@
             },
 
             customActions() {
-                //this.inviteScreen()
-                this.setRoomStatusWait();
+                this.inviteScreen()
+                //this.setRoomStatusWait();
                 //this.setRoomStatusBusy();
                 //this.setRoomStatusFree();
             },

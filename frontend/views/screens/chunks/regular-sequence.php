@@ -1,4 +1,4 @@
-<template x-if="roomSequence">
+<template x-if="hasSequence">
     <ul class="info__list">
         <template x-for="appointment in roomSequence">
             <template x-if="appointment.status_id === 3 || appointment.status_id === 4">
