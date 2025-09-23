@@ -9,6 +9,12 @@ class AppComponent extends Component
     private $clinic;
     private $clinics;
 
+    private $apiEvent;
+    private $apiData;
+
+    private $roomId;
+    private $appointments;
+
     public function init()
     {
         return parent::init();
@@ -55,5 +61,45 @@ class AppComponent extends Component
     public function getClinicTitle()
     {
         return $this->clinic['title'] ?? null;
+    }
+
+
+
+
+
+    public function setEvent($event)
+    {
+        $this->apiEvent = $event;
+    }
+
+    public function setData($data)
+    {
+        $this->apiData = isset($data[0]) && count($data) == 1 ? $data[0] : $data;
+    }
+
+
+
+    public function getEvent()
+    {
+        return $this->apiEvent;
+    }
+
+    public function getData()
+    {
+        return $this->apiData;
+    }
+
+    public function setRoomId($roomId)
+    {
+        $this->roomId = $roomId;
+    }
+    public function getAppointments()
+    {
+        return $this->appointments;
+    }
+
+    public function getTodayAppointments()
+    {
+
     }
 }

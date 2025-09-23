@@ -22,5 +22,8 @@ return [
         'app' => [
             'class' => 'common\components\AppComponent',
         ],
+        /*'webhook' => [
+            'class' => 'common\components\WebhookHandler',
+        ],*/
     ],
 ];

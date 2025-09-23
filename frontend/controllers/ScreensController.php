@@ -2,18 +2,21 @@
 
 namespace frontend\controllers;
 
+use common\models\Cabinet;
 use yii\web\Controller;
 
 class ScreensController extends Controller
 {
     public $layout = 'front';
 
-    public function actionIndex($roomId = null, $roomNumber = null, $mode = null)
+    public function actionIndex($room = null, $mode = null)
     {
+        $cabinet = Cabinet::getByUniqueId($room);
+
         return $this->render('index', [
-            'roomId' => $roomId,
-            'roomNumber' => $roomNumber,
-            'mode' => $mode,
+            'roomId' => $cabinet->unique_id ?? null,
+            'roomNumber' => $cabinet->number ?? null,
+            'mode' => $mode ?? null,
         ]);
     }
 }

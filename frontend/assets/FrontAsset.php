@@ -53,7 +53,7 @@ class FrontAsset extends AssetBundle
     {
         return [
             '/'.$this->directoryPath.'/js/alpineDev.min.js',
-            '/'.$this->directoryPath.'/js/client.js',
+            '/'.$this->directoryPath.'/js/client.js?v='.mt_rand(1000,10000),
         ];
     }
 

@@ -1,6 +1,7 @@
-var client = (function () {
+let client = (function () {
 
-    var connectionTimer = null,
+    let connectionTimer = 5000,
+        socketUrl = 'wss://docscreen.rnova.org/ws/',
         conn,
         uniqCache,
         isRegistered = false;
@@ -9,12 +10,9 @@ var client = (function () {
      *
      */
     function init() {
-        if (app.user) {
-            createSocketConnection();
-            setSocketConnection();
-            uniqCache = setUniqCache();
-        }
-        call.init();
+        createSocketConnection();
+        setSocketConnection();
+        uniqCache = setUniqCache();
     }
 
     /**
@@ -22,7 +20,7 @@ var client = (function () {
      */
     function setSocketConnection() {
         clearSocketConnection();
-        connectionTimer = setInterval(function () {
+        connectionTimer = setInterval(() => {
             createSocketConnection();
         }, 5000);
     }
@@ -31,11 +29,10 @@ var client = (function () {
      *
      */
     function createSocketConnection() {
-        if (!app.socketUrl || !app.isActive || !userCallSettings.getCurrentSubNumber()) {
+        if (!socketUrl) {
             return;
         }
-        var proto = app.isHttps() ? 'wss' : 'ws';
-        conn = new WebSocket(proto + '://' + app.socketUrl);
+        conn = new WebSocket(socketUrl);
         conn.onopen = function (e) {
             clearSocketConnection();
             register();
@@ -80,7 +77,7 @@ var client = (function () {
      *
      */
     function register() {
-        send('register', {project: app.project, user: app.user, cache: uniqCache});
+        send('register', {cache: uniqCache});
         isRegistered = true;
         //
     }
@@ -89,20 +86,22 @@ var client = (function () {
      * @param message
      */
     function handleMessage(message) {
+        console.log('message', message)
+        return;
         var data = JSON.parse(message),
             method = data['method'];
         if (!method) {
             return false;
         }
 
-        switch (method) {
+        /*switch (method) {
             case 'call':
                 call.handle(data);
                 break;
             case 'direct':
                 handleDirectMessage(data);
                 break;
-            /*case 'self':
+            case 'self':
                 handleSelfMessage(data);
                 break;
             case 'notification':
@@ -111,8 +110,8 @@ var client = (function () {
             case 'appointment':
                 handleAppointment(data);
                 break;
-             */
-        }
+
+        }*/
         return true;
     }
 

@@ -54,4 +54,5 @@ return [
 
     ],
     'params' => $params,
+    'defaultRoute' => 'screens/index'
 ];

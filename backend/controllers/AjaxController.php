@@ -56,9 +56,7 @@ class AjaxController extends Controller
                     }
                 }
             }
-
-
-            \Yii::$app->infoLog->add('model errors', $model->_errors);
+            
             if($model->_hasErrors()) {
                 $this->res['result'] = 0;
                 $this->res['data'] = null;

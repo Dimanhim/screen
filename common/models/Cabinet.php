@@ -77,6 +77,11 @@ class Cabinet extends BaseModel
         return $this->hasOne(UserAccess::className(), ['building_id' => 'building_id']);
     }
 
+    public static function getByUniqueId($uniqueId)
+    {
+        return self::find()->where(['unique_id' => $uniqueId, 'is_active' => 1, 'deleted' => null])->one();
+    }
+
     public function getList()
     {
         $cabinets = [];
@@ -201,8 +206,7 @@ class Cabinet extends BaseModel
     {
         return
             $_ENV['FRONTEND_URL'] .
-            '/screens/?roomId=' . $this->unique_id .
-            '&roomNumber=' . $this->number .
+            '/screens/?room=' . $this->unique_id .
             '&mode=' . $mode;
     }
 
@@ -213,4 +217,5 @@ class Cabinet extends BaseModel
         }
         return false;
     }
+
 }
