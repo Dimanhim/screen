@@ -15,6 +15,8 @@ use Yii;
  */
 class ApiController extends ApiBaseController
 {
+    // добавляем адрес сокетов в конфиги url меняем на host, в url пишем wss://docscreen.rnova.org/ws/ и используем в SocketHandler::sendMessage()
+    // доделываем SocketHandler->updateScreen
     public function actionHandle()
     {
         $data = Yii::$app->request->bodyParams;
@@ -29,11 +31,9 @@ class ApiController extends ApiBaseController
         Yii::$app->app->setEvent($data['event']);
         Yii::$app->app->setData($data['data']);
 
-        $apiData = Yii::$app->app->getData();
+        Yii::$app->app->handleWebhook();
 
-
-
-
+        return $this->response();
     }
 
     public function actionGetRoom()

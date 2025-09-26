@@ -52,6 +52,10 @@ return [
             'class' => 'yii\gii\Module',
             'allowedIPs' => ['*'],
         ],
+        'debug' => [
+            'class' => 'yii\debug\Module',
+            'allowedIPs' => ['*'],
+        ],
     ],
     'defaultRoute' => 'cabinet/index',
     'params' => $params,

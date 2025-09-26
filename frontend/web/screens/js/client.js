@@ -13,7 +13,7 @@ let client = (function () {
     function init(room_id = null) {
         roomId = room_id;
         createSocketConnection();
-        setSocketConnection();
+        //setSocketConnection();
         uniqCache = setUniqCache();
     }
 
@@ -36,14 +36,16 @@ let client = (function () {
         }
         conn = new WebSocket(socketUrl);
         conn.onopen = function (e) {
-            clearSocketConnection();
+            //clearSocketConnection();
             register();
         };
         conn.onclose = function (e) {
-            setSocketConnection();
+            //setSocketConnection();
+            console.log('close')
         };
         conn.onerror = function (e) {
-            setSocketConnection();
+            //setSocketConnection();
+            console.log('error')
         };
         conn.onmessage = function (e) {
             handleMessage(e.data);
@@ -54,6 +56,7 @@ let client = (function () {
      *
      */
     function closeConnection() {
+        return;
         if (!conn) {
             return;
         }
@@ -94,12 +97,12 @@ let client = (function () {
      */
     function handleMessage(message) {
         console.log('message', message)
-        return;
-        var data = JSON.parse(message),
-            method = data['method'];
-        if (!method) {
-            return false;
-        }
+
+        // var data = JSON.parse(message),
+        //     method = data['method'];
+        // if (!method) {
+        //     return false;
+        // }
 
         /*switch (method) {
             case 'call':

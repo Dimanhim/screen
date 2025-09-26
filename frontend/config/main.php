@@ -43,15 +43,15 @@ return [
             'showScriptName' => false,
             'rules' => [
                 'screens' => 'screens/index',
-                //'screens' => 'screens/index',
-                //'/screens/<roomId:\d+>' => 'screens/index',
-                //'screens/' => 'site/screens',
-                //'screens/?<id:\d+>' => 'screens/index',
-                //'<action:(.*)>' => 'screens/<action>',
-                //'<controller:\w+>/<action:\w+>' => '<controller>/<action>'
             ],
         ],
 
+    ],
+    'modules' => [
+        'debug' => [
+            'class' => 'yii\debug\Module',
+            'allowedIPs' => ['*'],
+        ],
     ],
     'params' => $params,
     'defaultRoute' => 'screens/index'

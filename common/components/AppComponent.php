@@ -173,6 +173,21 @@ class AppComponent extends Component
         return $this->preparedAppointments;
 
     }
+
+    // здесь вся логика фильтра визитов
+    public function handleWebhook($appointment = [])
+    {
+        $data = [
+            'method' => 'update_appointment',
+            'data' => [
+                'message' => 'some_json'
+            ]
+        ];
+
+        // если визит подходит под все условия, то
+        return SocketHandler::sendMessage(json_encode($data));
+    }
+
     public function getRoomInfo($roomId)
     {
         $this->setRoom($roomId);
