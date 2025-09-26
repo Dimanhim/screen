@@ -6,7 +6,7 @@
         </div>
         <div class="info__content">
             <div class="info__content-head">
-                <p class="info__name" x-text="roomInfo.name"></p>
+                <p class="info__name" x-text="roomInfo.doctorName"></p>
                 <p class="info__specialty" x-text="roomInfo.professionsText"></p>
             </div>
             <?php

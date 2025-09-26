@@ -38,6 +38,12 @@ class Api
         return $this->handleRequest($request);
     }
 
+    public function getPatient($params = [])
+    {
+        $request = $this->api->getRequest('getPatient', $params);
+        return $this->handleRequest($request);
+    }
+
     /**
      * @param array $params
      * @return array
@@ -45,6 +51,12 @@ class Api
     public function getSchedule($params = [])
     {
         $request = $this->api->getRequest('getSchedule', $params);
+        return $this->handleRequest($request);
+    }
+
+    public function getSchedulePeriods($params = [])
+    {
+        $request = $this->api->getRequest('getSchedulePeriods', $params);
         return $this->handleRequest($request);
     }
 

@@ -1,7 +1,7 @@
 <template x-if="hasSequence">
     <ul class="info__list">
         <template x-for="appointment in roomSequence">
-            <template x-if="appointment.status_id === 3 || appointment.status_id === 4">
+            <template x-if="appointment.status_id === 3 || appointment.status_id === 2">
                 <li class="info__list-item">
                     <span class="info__list-status status" :class="appointment.status_id === 3 && 'status--busy'" x-text="getAppointmentStatusText(appointment.status_id)"></span>
                     <b class="info__list-time">

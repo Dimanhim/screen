@@ -2,12 +2,14 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('screens', () => ({
             roomId: '<?= $roomId ?>',
-            roomNumber: '<?= $roomNumber ?>',
             mode: '<?= $mode ?>',
+
+            client: null,
 
             roomName: null,
             avatar: null,
             professionsText: null,
+            appointments: null,
 
             footerText: null,
             roomStatuses: ['empty', 'free', 'wait', 'busy'],
@@ -26,6 +28,12 @@
             roomSequence: null,                                 // массив визитов
             busySequence: null,
             waitSequence: null,
+
+            // roomInfoTest: {
+            //      name: 'Кабинет Невролога',
+            //      avatar: 'https://files.rnova.org/198733bd446bb513a3bfe91ae1f3d391/2f3988fbcf0519ea27fdcefaf0d1772d.png',
+            //      professionsText: 'Врач высшей категории',
+            // },
 
             // roomInfo: {
             //      name: 'Кабинет офтальмолога',
@@ -58,29 +66,63 @@
 
             setDefault() {
                 //this.setRoomStatusWait();
-                if(!this.roomInfo) {
-                    this.setRoomStatusEmpty();
-                }
-                else if(this.roomInfo && !this.hasSequence()) {
-                    this.setRoomStatusFree();
-                }
-                else if(this.hasBusy()) {
-                    this.setRoomStatusBusy();
-                }
-                else {
-                    this.setRoomStatusWait();
-                }
-                this.setBusySequence();
-                this.setWaitSequence();
+                this.client = client;
+                this.getAppointments(() => {
+                    this.getRoomInfo(() => {
+                        if(!this.roomInfo) {
+                            this.setRoomStatusEmpty();
+                        }
+                        else if(this.roomInfo && !this.hasSequence()) {
+                            this.setRoomStatusFree();
+                        }
+                        else if(this.hasBusy()) {
+                            this.setRoomStatusBusy();
+                        }
+                        else {
+                            this.setRoomStatusWait();
+                        }
+                        this.setBusySequence();
+                        this.setWaitSequence();
+                        this.client.init(this.roomId)
+                    })
+                })
             },
-            setAppointments() {
-
+            /*listen() {
+                this.client.listen();
+            },*/
+            getAppointments(callback) {
+                const params = new URLSearchParams();
+                params.set('roomId', this.roomId);
+                const response = this.loadData('/api/get-appointments', params)
+                response.then((data) => {
+                    this.roomSequence = data;
+                    callback();
+                })
+            },
+            async loadData(url, params) {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: params
+                });
+                let data = await response.json();
+                if(data.error == 0) return data.data;
+                return false;
+            },
+            getRoomInfo(callback) {
+                if(this.roomInfo) return;
+                const params = new URLSearchParams();
+                params.set('roomId', this.roomId);
+                const response = this.loadData('/api/get-room', params)
+                response.then((data) => {
+                    this.roomInfo = data;
+                    callback();
+                })
             },
             setBusySequence() {
-                this.busySequence = this.roomSequence.filter((item) => item.status_id === 3);
+                this.busySequence = this.roomSequence ? this.roomSequence.filter((item) => item.status_id === 3) : null;
             },
             setWaitSequence() {
-                this.waitSequence = this.roomSequence.filter((item) => item.status_id === 4);
+                this.waitSequence = this.roomSequence ? this.roomSequence.filter((item) => item.status_id === 2) : null;
             },
             isBusy() {
                 return this.roomStatus === 'busy';
@@ -97,7 +139,7 @@
             },
             hasWait() {
                 if(!this.roomSequence) return false;
-                return this.roomSequence.some(({ status_id }) => status_id === 4)
+                return this.roomSequence.some(({ status_id }) => status_id === 2)
             },
             hasSequence() {
                 return this.hasBusy() || this.hasWait();

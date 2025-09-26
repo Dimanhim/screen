@@ -17,6 +17,7 @@ class ApiBaseController extends Controller
         'error' => 0,
         'data' => [],
     ];
+    protected $allowedActions = ['get-room', 'get-appointments'];
 
     /**
      * @param $action
@@ -27,7 +28,7 @@ class ApiBaseController extends Controller
     public function beforeAction($action)
     {
         $this->enableCsrfValidation = false;
-        $this->checkApiKey();
+        if(!in_array($action->id, $this->allowedActions)) $this->checkApiKey();
         return parent::beforeAction($action);
     }
 

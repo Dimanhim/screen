@@ -1,4 +1,5 @@
 <?php
+$this->registerJsFile('/screens/js/client.js?v='.mt_rand(1000,10000), ['position' => \yii\web\View::POS_HEAD]);
     $showed = [
         'main-header',
         'no-schedule-screen',
@@ -13,7 +14,6 @@
         <?php foreach($showed as $viewName) : ?>
             <?= $this->render('chunks/' . $viewName, [
                 'room' => $roomId,
-                'roomNumber' => $roomNumber,
                 'mode' => $mode,
             ]) ?>
         <?php endforeach; ?>
@@ -24,6 +24,5 @@
 <!--<?//= $this->render('tickets', []) ?>-->
 <?= $this->render('_alpine', [
     'roomId' => $roomId,
-    'roomNumber' => $roomNumber,
     'mode' => $mode,
 ]) ?>

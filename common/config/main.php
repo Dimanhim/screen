@@ -22,6 +22,9 @@ return [
         'app' => [
             'class' => 'common\components\AppComponent',
         ],
+        'socket' => [
+            'class' => 'common\components\SocketHandler',
+        ],
         /*'webhook' => [
             'class' => 'common\components\WebhookHandler',
         ],*/

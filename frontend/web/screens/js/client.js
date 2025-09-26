@@ -4,12 +4,14 @@ let client = (function () {
         socketUrl = 'wss://docscreen.rnova.org/ws/',
         conn,
         uniqCache,
+        roomId,
         isRegistered = false;
 
     /**
      *
      */
-    function init() {
+    function init(room_id = null) {
+        roomId = room_id;
         createSocketConnection();
         setSocketConnection();
         uniqCache = setUniqCache();
@@ -77,9 +79,14 @@ let client = (function () {
      *
      */
     function register() {
-        send('register', {cache: uniqCache});
+        console.log('register')
+        send('register', {cache: uniqCache, roomId: roomId});
         isRegistered = true;
         //
+    }
+
+    function listen() {
+        console.log('client listen')
     }
 
     /**
@@ -119,58 +126,58 @@ let client = (function () {
      *
      * @param data
      */
-    function handleNotification(data) {
-        try {
-            var event = data['event'];
-            switch (event) {
-                case 'update':
-                    userNotification.updateNotification(data);
-                    break;
-                case 'list':
-                    userNotification.init();
-                    break;
-            }
-        } catch (e) {
-
-        }
-    }
+    // function handleNotification(data) {
+    //     try {
+    //         var event = data['event'];
+    //         switch (event) {
+    //             case 'update':
+    //                 userNotification.updateNotification(data);
+    //                 break;
+    //             case 'list':
+    //                 userNotification.init();
+    //                 break;
+    //         }
+    //     } catch (e) {
+    //
+    //     }
+    // }
 
     /**
      *
      * @param data
      */
-    function handleAppointment(data) {
-        try {
-            var action = data.event;
-            switch (action) {
-                case 'notificationManager':
-                    notification.showAppointment(data);
-                    dashboard.getData();
-                    break;
-            }
-        } catch (e) {
-        }
-    }
+    // function handleAppointment(data) {
+    //     try {
+    //         var action = data.event;
+    //         switch (action) {
+    //             case 'notificationManager':
+    //                 notification.showAppointment(data);
+    //                 dashboard.getData();
+    //                 break;
+    //         }
+    //     } catch (e) {
+    //     }
+    // }
 
     /**
      * @param data
      */
-    function handleSelfMessage(data) {
-        try {
-            var action = data.action;
-            switch (action) {
-                case 'modal':
-                    callsRouter.hideCall();
-                    break;
-                case 'call_panel':
-                    if (data.uniqCache != uniqCache) {
-                        call.togglePanel(true);
-                    }
-            }
-        }
-        catch (e) {
-        }
-    }
+    // function handleSelfMessage(data) {
+    //     try {
+    //         var action = data.action;
+    //         switch (action) {
+    //             case 'modal':
+    //                 callsRouter.hideCall();
+    //                 break;
+    //             case 'call_panel':
+    //                 if (data.uniqCache != uniqCache) {
+    //                     call.togglePanel(true);
+    //                 }
+    //         }
+    //     }
+    //     catch (e) {
+    //     }
+    // }
 
     /**
      * @param method
@@ -185,24 +192,24 @@ let client = (function () {
     /**
      *
      */
-    function handleDirectMessage(data) {
-        try {
-            var event = data.event;
-            switch (event) {
-                case 'comments':
-                    comments.update(data.model, data.id);
-                    break;
-                case 'call':
-                    call.showActiveCalls();
-                    break;
-                case 'missed_calls':
-                    //userCallSettings.updateCountCall();
-                    break;
-            }
-        }
-        catch (e) {
-        }
-    }
+    // function handleDirectMessage(data) {
+    //     try {
+    //         var event = data.event;
+    //         switch (event) {
+    //             case 'comments':
+    //                 comments.update(data.model, data.id);
+    //                 break;
+    //             case 'call':
+    //                 call.showActiveCalls();
+    //                 break;
+    //             case 'missed_calls':
+    //                 //userCallSettings.updateCountCall();
+    //                 break;
+    //         }
+    //     }
+    //     catch (e) {
+    //     }
+    // }
 
     //
     return {

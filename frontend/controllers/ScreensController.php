@@ -11,11 +11,10 @@ class ScreensController extends Controller
 
     public function actionIndex($room = null, $mode = null)
     {
-        $cabinet = Cabinet::getByUniqueId($room);
+        $room = Cabinet::getByUniqueId($room);
 
         return $this->render('index', [
-            'roomId' => $cabinet->unique_id ?? null,
-            'roomNumber' => $cabinet->number ?? null,
+            'roomId' => $room->unique_id ?? null,
             'mode' => $mode ?? null,
         ]);
     }

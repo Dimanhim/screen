@@ -15,7 +15,7 @@ class SocketController extends Controller
         $server = IoServer::factory(
             new HttpServer(
                 new WsServer(
-                    new SocketHandler()
+                    \Yii::$app->socket
                 )
             ),
             \Yii::$app->params['socket']['port'], \Yii::$app->params['socket']['url']
