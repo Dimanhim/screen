@@ -15,20 +15,14 @@ use Yii;
  */
 class ApiController extends ApiBaseController
 {
-    // добавляем адрес сокетов в конфиги url меняем на host, в url пишем wss://docscreen.rnova.org/ws/ и используем в SocketHandler::sendMessage()
-    // доделываем SocketHandler->updateScreen
     public function actionHandle()
     {
         $data = Yii::$app->request->bodyParams;
-        if(!isset($data['event'])) {
-            $this->addError(403, 'Не указано событие');
-            return $this->response();
-        }
+
         if(!isset($data['data'])) {
             $this->addError(403, 'Неверный формат данных');
             return $this->response();
         }
-        Yii::$app->app->setEvent($data['event']);
         Yii::$app->app->setData($data['data']);
 
         Yii::$app->app->handleWebhook();
@@ -51,7 +45,7 @@ class ApiController extends ApiBaseController
 
     public function actionGetAppointments()
     {
-        $data = Yii::$app->app->getScreenAppointments(Yii::$app->request->post('roomId'));
+        $data = Yii::$app->app->getScreenAppointments(Yii::$app->request->post());
 
 //        $data = [
 //             [

@@ -71,8 +71,8 @@
                 this.createSocketConnection();
             },
             setDefault() {
-                this.getAppointments(() => {
-                    this.getRoomInfo(() => {
+                this.getRoomInfo(() => {
+                    this.getAppointments(() => {
                         this.setRoomScreen();
                     })
                 })
@@ -180,6 +180,7 @@
             getAppointments(callback) {
                 const params = new URLSearchParams();
                 params.set('roomId', this.roomId);
+                params.set('doctorId', this.roomInfo.id);
                 const response = this.loadData('/api/get-appointments', params)
                 response.then((data) => {
                     this.roomSequence = data;

@@ -12,10 +12,10 @@ class AppComponent extends Component
     const STATUS_WAIT = 2;
     const STATUS_BUSY = 3;
 
+    private $clinicIds = [];
     private $clinic;
     private $clinics;
 
-    private $apiEvent;
     private $apiData;
 
     private $room;
@@ -76,23 +76,9 @@ class AppComponent extends Component
         return $this->clinic['title'] ?? null;
     }
 
-
-
-
-
-    public function setEvent($event)
-    {
-        $this->apiEvent = $event;
-    }
-
     public function setData($data)
     {
         $this->apiData = isset($data[0]) && count($data) == 1 ? $data[0] : $data;
-    }
-
-    public function getEvent()
-    {
-        return $this->apiEvent;
     }
 
     public function getData()
@@ -100,6 +86,23 @@ class AppComponent extends Component
         return $this->apiData;
     }
 
+    public function setClinicIds()
+    {
+        if($this->clinicIds) return;
+
+        $sql = "
+            SELECT bld.clinic_id FROM ".Yii::$app->db->tablePrefix."cabinet AS cab
+            LEFT JOIN ".Yii::$app->db->tablePrefix."buildings AS bld ON bld.id = cab.building_id
+            WHERE bld.is_active = 1 AND cab.is_active = 1 AND bld.deleted IS NULL AND cab.deleted IS NULL AND bld.clinic_id IS NOT NULL
+        ";
+        $query = Yii::$app->db->createCommand($sql)->queryAll();
+        if($query) {
+            $clinicIds = array_map(function($n) {
+                return $n['clinic_id'];
+            }, $query);
+            $this->clinicIds = array_unique($clinicIds);
+        }
+    }
 
     public function setRoom($roomId)
     {
@@ -127,11 +130,12 @@ class AppComponent extends Component
     }
     public function setUserBySchedule()
     {
-        if(!$this->users || !$this->room) return false;
+        if(!$this->users || !$this->room || !$this->clinicIds) return false;
 
         $params = [
             'time_start' => date('d.m.Y') . ' 00:00',
             'time_end' => date('d.m.Y') . ' 23:59',
+            'clinic_id' => implode(',', $this->clinicIds),
             'type' => 1
         ];
         $request = Yii::$app->api->getSchedulePeriods($params);
@@ -140,11 +144,12 @@ class AppComponent extends Component
                 if($period['room'] == $this->room->mis_id) {
                     if($user = $this->getUserById($period['user_id'])) {
                         $this->user = $user;
-                        return;
+                        return true;
                     }
                 }
             }
         }
+        return false;
     }
 
     public function getPatientById($patientId = null)
@@ -157,15 +162,20 @@ class AppComponent extends Component
     }
 
 
-    public function getScreenAppointments($roomId)
+    public function getScreenAppointments($postRequest)
     {
-        $this->setRoom($roomId);
+        if(!isset($postRequest['roomId']) || !isset($postRequest['doctorId'])) return null;
 
-        if(!$this->room) return false;
+        $this->setClinicIds();
+        $this->setRoom($postRequest['roomId']);
+
+        if(!$this->room || !$this->room->building) return false;
 
         $params = [
             'date_from' => date('d.m.Y') . ' 00:00',
             'date_to' => date('d.m.Y') . ' 23:59',
+            'doctor_id' => $postRequest['doctorId'],
+            'clinic_id' => $this->room->building->clinic_id,
             'status_id' => Api::STATUS_ID_WAIT . ',' . Api::STATUS_ID_BUSY,
             'room' => $this->room->mis_id
         ];
@@ -257,6 +267,7 @@ class AppComponent extends Component
 
     public function getRoomInfo($roomId)
     {
+        $this->setClinicIds();
         $this->setRoom($roomId);
         $this->setUsers();
         $this->setProfessions();
