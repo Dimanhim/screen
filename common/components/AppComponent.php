@@ -2,12 +2,16 @@
 
 namespace common\components;
 
+use common\models\Ticket;
 use Yii;
 use common\models\Cabinet;
 use yii\base\Component;
 
 class AppComponent extends Component
 {
+    const STATUS_WAIT = 2;
+    const STATUS_BUSY = 3;
+
     private $clinic;
     private $clinics;
 
@@ -15,12 +19,14 @@ class AppComponent extends Component
     private $apiData;
 
     private $room;
+    private $tickets;
+    private $professions;
     private $appointments;
     private $preparedAppointments;
     private $patientIds;
     private $patients;
     private $users;
-    private $user;
+    private $user;                  // врач, который устанавливается по названию кабинета из расписания
 
     public function init()
     {
@@ -110,7 +116,7 @@ class AppComponent extends Component
         }, $this->appointments);
     }
 
-    public function setUsers()
+    private function setUsers()
     {
         $request = Yii::$app->api->getUsers();
         if($data = ApiHelper::getDataFromApi($request)) {
@@ -141,9 +147,6 @@ class AppComponent extends Component
         }
     }
 
-
-
-
     public function getPatientById($patientId = null)
     {
         return $this->patients[$patientId] ?? null;
@@ -164,7 +167,7 @@ class AppComponent extends Component
             'date_from' => date('d.m.Y') . ' 00:00',
             'date_to' => date('d.m.Y') . ' 23:59',
             'status_id' => Api::STATUS_ID_WAIT . ',' . Api::STATUS_ID_BUSY,
-            'room' => $this->room->mis_id,
+            'room' => $this->room->mis_id
         ];
 
         $request = Yii::$app->api->getAppointments($params);
@@ -174,24 +177,89 @@ class AppComponent extends Component
 
     }
 
-    // здесь вся логика фильтра визитов
-    public function handleWebhook($appointment = [])
+    private function setProfessions()
     {
+        $request = Yii::$app->api->getProfessions(['show_all' => true]);
+
+        $data = ApiHelper::getDataFromApi($request);
+
+        if($data) {
+            foreach($data as $item) {
+                $this->professions[$item['id']] = $item;
+            }
+        }
+    }
+
+    private function setTickets()
+    {
+        if(!$this->room) return null;
+        $timeStart = strtotime(date('d.m.Y'));
+        $timeEnd = $timeStart + 86400 - 1;
+
+        $tickets = Ticket::find()
+            ->where(['mis_id' => $this->room->mis_id])
+            ->andWhere(['between', 'time_start_ts', $timeStart, $timeEnd])
+            ->andWhere(['is_active' => 1])
+            ->andWhere(['deleted' => null])
+            ->all();
+        if(!$tickets) return null;
+
+        foreach($tickets as $ticket) {
+            $this->tickets[$ticket->appointment_id] = $ticket;
+        }
+    }
+
+    public function getProfessionDoctor($professionId = null)
+    {
+        if(!$this->professions || !isset($this->professions[$professionId])) return null;
+
+        return $this->professions[$professionId]['doctor_name'];
+    }
+
+    public function handleWebhook()
+    {
+        if(!$this->apiData) return false;
+
+        $this->appointments = [$this->apiData];
+
+        $roomId = $this->getRoomId();
+        $this->setRoom($roomId);
+        $this->prepareAppointments();
+        $this->apiData = $this->preparedAppointments[0] ?? null;
+
+        if(!$this->apiData) return false;
+
+        if(!$roomId) return false;
+
+        $this->apiData['roomId'] = $roomId;
+
+        $method = 'update';
+
+        if($this->apiData['status_id'] == self::STATUS_BUSY) {
+            $method = 'notification';
+        }
+
         $data = [
-            'method' => 'update_appointment',
-            'data' => [
-                'message' => 'some_json'
-            ]
+            'method' => $method,
+            'data' => $this->apiData
         ];
 
-        // если визит подходит под все условия, то
         return SocketHandler::sendMessage(json_encode($data));
+    }
+
+    public function getRoomId()
+    {
+        $room = Cabinet::getByRoomName($this->apiData['room']);
+        if(!$room) return null;
+
+        return $room->unique_id;
     }
 
     public function getRoomInfo($roomId)
     {
         $this->setRoom($roomId);
         $this->setUsers();
+        $this->setProfessions();
 
         if(!$this->room) return false;
 
@@ -203,19 +271,19 @@ class AppComponent extends Component
         $data['name'] = $this->room->mis_id;
         $data['number'] = $this->room->number;
         $data['doctorName'] = $this->user['name'];
-        $data['professionsText'] = $this->user['profession_titles'];
+        $data['professionsText'] = $this->getProfessionTitle($this->user['profession']);
         return $data;
     }
 
     private function prepareAppointments() {
 
         $this->setPatientIds();
+        $this->setTickets();
 
         if(!$this->patientIds) return false;
 
         $request = Yii::$app->api->getPatient(['id' => implode(',', $this->patientIds)]);
         $patientData = ApiHelper::getDataFromApi($request);
-
 
         if($patientData) {
             if(isset($patientData['patient_id'])) {
@@ -234,12 +302,34 @@ class AppComponent extends Component
                 $preparedAppointments = $appointment;
                 $preparedAppointments['time_start'] = date('H:i', strtotime($appointment['time_start']));
                 $preparedAppointments['patientNumber'] = null;
-                $preparedAppointments['ticketCode'] = null;
+                $preparedAppointments['ticketCode'] = $this->getTicketCode($appointment['id']);
                 if($patient) {
                     $preparedAppointments['patientNumber'] = $patient['number'];
+                    $preparedAppointments['patient_short_name'] = $patient['first_name'] . ' '.$patient['third_name'];
                 }
                 $this->preparedAppointments[] = $preparedAppointments;
             }
         }
+    }
+
+    private function getTicketCode($appointmentId)
+    {
+        if(!$this->room) return null;
+        if(!$this->room->show_tickets) return null;
+
+        $ticket = $this->tickets[$appointmentId] ?? null;
+
+        if(!$ticket) return null;
+
+        return $ticket->ticket;
+    }
+
+    public function getProfessionTitle($professions = [])
+    {
+        if(!$professions) return null;
+
+        $key = array_key_first($professions);
+
+        return $this->getProfessionDoctor($professions[$key]);
     }
 }

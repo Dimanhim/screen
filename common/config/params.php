@@ -7,5 +7,5 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength' => 8,
     //'socket' => ['port' => 10001, 'url' => '87.228.81.25']
-    'socket' => ['port' => 10001, 'url' => '127.0.0.1']
+    'socket' => ['port' => 10001, 'host' => '127.0.0.1', 'url' => 'wss://docscreen.rnova.org/ws/']
 ];

@@ -82,6 +82,11 @@ class Cabinet extends BaseModel
         return self::find()->where(['unique_id' => $uniqueId, 'is_active' => 1, 'deleted' => null])->one();
     }
 
+    public static function getByRoomName($roomName)
+    {
+        return self::find()->where(['mis_id' => $roomName, 'is_active' => 1, 'deleted' => null])->one();
+    }
+
     public function getList()
     {
         $cabinets = [];

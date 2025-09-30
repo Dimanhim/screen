@@ -18,21 +18,7 @@ class ScreensController extends Controller
         return $this->render('index', [
             'roomId' => $room->unique_id ?? null,
             'mode' => $mode ?? null,
+            'roomNumber' => $room->number ?? null,
         ]);
     }
-
-//    public function actionTest()
-//    {
-//        $socket = new SocketServer(\Yii::$app->params['socket']['url'] . ':' . \Yii::$app->params['socket']['port']);
-//
-//        $socket->on('connection', function (ConnectionInterface $connection) {
-//            $connection->write("Hello " . $connection->getRemoteAddress() . "!\n");
-//            $connection->write("Welcome to this amazing server!\n");
-//            $connection->write("Here's a tip: don't say anything.\n");
-//
-//            $connection->on('data', function ($data) use ($connection) {
-//                $connection->close();
-//            });
-//        });
-//    }
 }

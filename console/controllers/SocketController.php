@@ -18,7 +18,7 @@ class SocketController extends Controller
                     \Yii::$app->socket
                 )
             ),
-            \Yii::$app->params['socket']['port'], \Yii::$app->params['socket']['url']
+            \Yii::$app->params['socket']['port'], \Yii::$app->params['socket']['host']
         );
 
         $server->run();

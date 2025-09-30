@@ -12,7 +12,6 @@ use common\models\Building;
 
 $this->title = 'Кабинеты';
 $this->params['breadcrumbs'][] = $this->title;
-echo __DIR__;
 ?>
 <div class="cabinet-index">
 

@@ -3,12 +3,12 @@
         Alpine.data('screens', () => ({
             roomId: '<?= $roomId ?>',
             mode: '<?= $mode ?>',
-
-            client: null,
+            roomNumber: '<?= $roomNumber ?>',
 
             roomName: null,
             avatar: null,
             professionsText: null,
+            appointment: null,
             appointments: null,
 
             footerText: null,
@@ -17,10 +17,12 @@
             screens: ['no-schedule', 'room-info', 'invite'],
             screen: null,
             showInviteScreen: false,
+            invitedAppId: null,
             inviteScreenTimeout: 5000,
             invite: {                                           // инфа по приглашению audio
-                messageTop: 'Пациент с талоном',
-                messageBottom: 'Л001',
+                fullMessage: null,
+                messageTop: null,
+                messageBottom: null,
                 audio: null
             },
 
@@ -29,11 +31,8 @@
             busySequence: null,
             waitSequence: null,
 
-            // roomInfoTest: {
-            //      name: 'Кабинет Невролога',
-            //      avatar: 'https://files.rnova.org/198733bd446bb513a3bfe91ae1f3d391/2f3988fbcf0519ea27fdcefaf0d1772d.png',
-            //      professionsText: 'Врач высшей категории',
-            // },
+            socketUrl: '<?= Yii::$app->params['socket']['url'] ?>',
+            socketConn: null,
 
             // roomInfo: {
             //      name: 'Кабинет офтальмолога',
@@ -64,38 +63,140 @@
             //     },
             // ],
 
+            /**
+             INIT
+             * */
+            initDefault() {
+                this.setDefault();
+                this.createSocketConnection();
+            },
             setDefault() {
-                //this.setRoomStatusWait();
-                this.client = client;
                 this.getAppointments(() => {
                     this.getRoomInfo(() => {
-                        if(!this.roomInfo) {
-                            this.setRoomStatusEmpty();
-                        }
-                        else if(this.roomInfo && !this.hasSequence()) {
-                            this.setRoomStatusFree();
-                        }
-                        else if(this.hasBusy()) {
-                            this.setRoomStatusBusy();
-                        }
-                        else {
-                            this.setRoomStatusWait();
-                        }
-                        this.setBusySequence();
-                        this.setWaitSequence();
-                        this.client.init(this.roomId)
+                        this.setRoomScreen();
                     })
                 })
             },
-            /*listen() {
-                this.client.listen();
-            },*/
+
+            /**
+             SOCKET
+             * */
+            createSocketConnection() {
+                let data = this;
+                this.socketConn = new WebSocket(this.socketUrl);
+                this.socketConn.onopen = function (e) {
+                    data.register();
+                };
+                this.socketConn.onclose = function (e) {
+                    data.closeConnection();
+                    console.log('close')
+                };
+                this.socketConn.onerror = function (e) {
+                    console.log('error')
+                };
+                this.socketConn.onmessage = function (e) {
+                    data.handleMessage(e.data);
+                };
+            },
+            closeConnection() {
+                if (!this.socketConn) {
+                    return;
+                }
+                this.socketConn.close();
+            },
+            register() {
+                this.send('register', {roomId: this.roomId});
+            },
+            handleMessage(message) {
+                let data = JSON.parse(message),
+                    method = data['method'];
+                if (!method) {
+                    return false;
+                }
+                let app = this;
+                switch (method) {
+                    case 'register':
+                        break;
+                    case 'update':
+                        this.setAppointment(data.data, () => {
+                            app.handleUpdate();
+                        })
+                        break;
+                    case 'notification':
+                        this.setAppointment(data.data, () => {
+                            app.handleNotification();
+                        })
+                        break;
+                }
+                return true;
+            },
+            send(method, data) {
+                data['method'] = method;
+                this.socketConn.send(JSON.stringify(data));
+            },
+
+            /**
+             SOCKET WEBHOOK
+             * */
+            setAppointment(data, callback) {
+                this.appointment = data;
+                callback();
+                return;
+
+                let app = this.appointment;
+                let roomSeq = this.roomSequence;
+                // проверить, есть ли такой визит, если нет, то добавить
+                    // если есть, то проверить статус. Если контролируемый, то поменять, если нет, то убрать его из roomSequence
+                let room = this.roomSequence ? this.roomSequence.filter((item) => item.id == app.id) : null;
+                if(!room.length && (app.status_id == 2 || app.status_id == 3)) {
+                    roomSeq.push(room)
+                }
+                let total = roomSeq ? roomSeq.filter((item) => (item.status_id == 2 || item.status_id ==3)) : null;
+                this.roomSequence = total;
+
+                // let room = roomSeq.map(seqApp => {
+                //     if(seqApp.id === app.id) {
+                //         seqApp.status_id = app.status_id;
+                //     }
+                //     return seqApp;
+                // });
+                this.setSequences();
+                callback()
+            },
+            // clearAppointment() {
+            //     this.appointment = null;
+            // },
+            handleUpdate() {
+                this.setDefault();
+            },
+            handleNotification() {
+                this.setDefault();
+                this.inviteScreen();
+            },
+
+            /**
+             API
+             * */
             getAppointments(callback) {
                 const params = new URLSearchParams();
                 params.set('roomId', this.roomId);
                 const response = this.loadData('/api/get-appointments', params)
                 response.then((data) => {
                     this.roomSequence = data;
+                    this.setSequences();
+                    callback();
+                })
+            },
+            getRoomInfo(callback) {
+                if(this.roomInfo) {
+                    callback();
+                    return;
+                }
+                const params = new URLSearchParams();
+                params.set('roomId', this.roomId);
+                const response = this.loadData('/api/get-room', params)
+                response.then((data) => {
+                    this.roomInfo = data;
                     callback();
                 })
             },
@@ -108,15 +209,27 @@
                 if(data.error == 0) return data.data;
                 return false;
             },
-            getRoomInfo(callback) {
-                if(this.roomInfo) return;
-                const params = new URLSearchParams();
-                params.set('roomId', this.roomId);
-                const response = this.loadData('/api/get-room', params)
-                response.then((data) => {
-                    this.roomInfo = data;
-                    callback();
-                })
+
+            /**
+             SCREENS
+             * */
+            setRoomScreen() {
+                if(!this.roomInfo) {
+                    this.setRoomStatusEmpty();
+                }
+                else if(this.roomInfo && !this.hasSequence()) {
+                    this.setRoomStatusFree();
+                }
+                else if(this.hasBusy()) {
+                    this.setRoomStatusBusy();
+                }
+                else {
+                    this.setRoomStatusWait();
+                }
+            },
+            setSequences() {
+                this.setWaitSequence();
+                this.setBusySequence();
             },
             setBusySequence() {
                 this.busySequence = this.roomSequence ? this.roomSequence.filter((item) => item.status_id === 3) : null;
@@ -159,10 +272,7 @@
                 }
                 this.footerText = footerText;
             },
-
-            // roomStatus
             setRoomStatus(roomStatus) {
-                // здесь инфа берется из сокета
                 this.roomStatus = roomStatus;
                 this.setScreen();
                 this.setFooterText();
@@ -179,14 +289,23 @@
             setRoomStatusBusy() {
                 this.setRoomStatus('busy');
             },
-
-            // screens
             inviteScreen() {
+                this.setInviteMessages();
                 this.showInviteScreen = true;
-                // набор действий
                 setTimeout(() => {
                     this.showInviteScreen = false;
                 }, this.inviteScreenTimeout)
+            },
+            setInviteMessages() {
+                if(this.mode == 'regular') {
+                    this.invite.messageTop = 'На прием в кабинет ' + this.roomNumber + ' приглашается '
+                    this.invite.messageBottom = this.appointment.patient_short_name;
+                }
+                else if(this.mode == 'tickets') {
+                    this.invite.messageTop = 'На прием в кабинет ' + this.roomNumber + ' приглашается '
+                    this.invite.messageBottom = 'Пациент с талоном ' + this.appointment.ticketCode;
+                }
+                this.invite.fullMessage = this.invite.messageTop + this.invite.messageBottom;
             },
             setScreen() {
                 let screen = 'no-schedule';
@@ -201,14 +320,6 @@
             isScreenRoomInfo() {
                 return this.screen === 'room-info' && !this.showInviteScreen;
             },
-
-            customActions() {
-                this.inviteScreen()
-                //this.setRoomStatusWait();
-                //this.setRoomStatusBusy();
-                //this.setRoomStatusFree();
-            },
-
             getAppointmentStatusText(status_id) {
                 return status_id === 3 ? 'На приёме' : 'Ожидает';
             },

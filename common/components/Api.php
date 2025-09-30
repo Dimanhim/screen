@@ -44,6 +44,12 @@ class Api
         return $this->handleRequest($request);
     }
 
+    public function getProfessions($params = [])
+    {
+        $request = $this->api->getRequest('getProfessions', $params);
+        return $this->handleRequest($request);
+    }
+
     /**
      * @param array $params
      * @return array

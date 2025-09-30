@@ -1,5 +1,4 @@
 <?php
-$this->registerJsFile('/screens/js/client.js?v='.mt_rand(1000,10000), ['position' => \yii\web\View::POS_HEAD]);
     $showed = [
         'main-header',
         'no-schedule-screen',
@@ -8,7 +7,7 @@ $this->registerJsFile('/screens/js/client.js?v='.mt_rand(1000,10000), ['position
         'main-footer'
     ];
 ?>
-<div data-template x-data="screens" x-init="setDefault">
+<div data-template x-data="screens" x-init="initDefault">
     <div class="wrapper">
 
         <?php foreach($showed as $viewName) : ?>
@@ -20,9 +19,8 @@ $this->registerJsFile('/screens/js/client.js?v='.mt_rand(1000,10000), ['position
     </div>
 </div>
 
-<!--<?//= $this->render('regular', []) ?>-->
-<!--<?//= $this->render('tickets', []) ?>-->
 <?= $this->render('_alpine', [
     'roomId' => $roomId,
     'mode' => $mode,
+    'roomNumber' => $roomNumber,
 ]) ?>

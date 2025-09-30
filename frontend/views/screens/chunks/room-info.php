@@ -21,10 +21,6 @@
                     ]);
                 }
             ?>
-            <!--
-            <RegularSequence v-if="roomMode === 'regular'" :sequence="roomSequence" />
-            <TicketSequence v-else-if="roomMode === 'tickets'" :sequence="roomSequence" />
-            -->
         </div>
     </main>
 </template>
