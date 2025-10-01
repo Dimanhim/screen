@@ -41,6 +41,7 @@ class m130524_201442_init extends Migration
             'password_reset_token' => null,
             'email' => 'dimanhim@list.ru',
             'status' => '10',
+            'is_admin' => 1,
             'is_active' => 1,
             'created_at' => time(),
             'updated_at' => time()
