@@ -10,7 +10,7 @@
         </template>
 
         <div class="header__logo" @click="customActions">
-            <img src="/screens/img/logo.png" alt="" />
+            <img src="/screens/img/logo.svg" alt="" />
         </div>
     </header>
 </div>
