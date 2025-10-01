@@ -237,7 +237,7 @@ class Ticket extends BaseModel
      */
     public function sendWebHook()
     {
-        $url = $_ENV['WEBHOOK_URL'];
+        $url =  $_ENV['WEBHOOK_URL'];
 
         $curl = curl_init();
 

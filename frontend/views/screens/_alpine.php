@@ -31,7 +31,7 @@
             busySequence: null,
             waitSequence: null,
 
-            socketUrl: '<?= Yii::$app->params['socket']['url'] ?>',
+            socketUrl: '<?= \Yii::$app->settings->getParam('socket_url') ?>',
             socketConn: null,
 
             // roomInfo: {

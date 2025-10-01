@@ -4,6 +4,7 @@ namespace common\models;
 
 use common\components\Api;
 use common\components\ApiHelper;
+use common\components\Helpers;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -210,7 +211,7 @@ class Cabinet extends BaseModel
     public function getRoomUrl(string $mode) : string
     {
         return
-            $_ENV['FRONTEND_URL'] .
+            Helpers::getAbsoluteUrl() .
             '/screens/?room=' . $this->unique_id .
             '&mode=' . $mode;
     }

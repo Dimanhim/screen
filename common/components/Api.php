@@ -21,7 +21,7 @@ class Api
      */
     public function __construct()
     {
-        $this->api = new RnovaApi($_ENV['MIS_REQUEST_API_URL'], $_ENV['MIS_API_KEY']);
+        $this->api = new RnovaApi(\Yii::$app->settings->getParam('rnova_api_url'), \Yii::$app->settings->getParam('rnova_api_key'));
     }
 
     /**

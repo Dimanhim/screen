@@ -114,7 +114,7 @@ class SocketHandler extends Component implements MessageComponentInterface
         }
         try {
             $client = new Client(
-                \Yii::$app->params['socket']['url']
+                \Yii::$app->settings->getParam('socket_url')
             );
             $client->send($message);
 

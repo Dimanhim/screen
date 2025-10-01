@@ -16,6 +16,7 @@ class AccessesComponent extends Component
     const TYPE_CABINET  = 'cabinet';
     const TYPE_TICKETS  = 'ticket';
     const TYPE_BUILDING = 'building';
+    const TYPE_SETTINGS = 'settings';
 
     public $_accesses = [
 

@@ -25,8 +25,8 @@ return [
         'socket' => [
             'class' => 'common\components\SocketHandler',
         ],
-        /*'webhook' => [
-            'class' => 'common\components\WebhookHandler',
-        ],*/
+        'settings' => [
+            'class' => 'common\components\SettingsComponent',
+        ],
     ],
 ];

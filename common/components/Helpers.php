@@ -3,6 +3,7 @@
 namespace common\components;
 
 use Yii;
+use yii\helpers\Url;
 
 class Helpers
 {
@@ -100,5 +101,14 @@ class Helpers
             'subject' => $toTimestamp ? strtotime($subject) : $subject,
         ];
         return $dates['subject'] >= $dates['date_from'] and $dates['subject'] < $dates['date_to'];
+    }
+
+    /**
+     * @return bool|string
+     */
+    public static function getAbsoluteUrl()
+    {
+        $url = str_replace('admin-', '', Url::home(true));
+        return substr($url, 0, -1);
     }
 }

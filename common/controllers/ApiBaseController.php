@@ -54,7 +54,7 @@ class ApiBaseController extends Controller
      */
     protected function checkApiKey()
     {
-        if($_ENV['WEBHOOK_KEY'] && $_ENV['WEBHOOK_KEY'] !== Yii::$app->request->get('key')) {
+        if(\Yii::$app->settings->getParam('rnova_webhook_key') && \Yii::$app->settings->getParam('rnova_webhook_key') !== Yii::$app->request->get('key')) {
             $this->addError(403, 'Неверный ключ запроса');
             return $this->response();
         }

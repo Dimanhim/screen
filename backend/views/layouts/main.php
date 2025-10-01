@@ -69,6 +69,9 @@ AppAsset::register($this);
     if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_TICKETS, null, null, true) or User::isAdmin()) {
         $menuItems[] = ['label' => 'Талоны', 'url' => ['/ticket/index']];
     }
+    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_SETTINGS, null, null, true) or User::isAdmin()) {
+        $menuItems[] = ['label' => 'Настройки', 'url' => ['/settings/index']];
+    }
 
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
