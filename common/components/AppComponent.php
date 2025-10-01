@@ -36,8 +36,8 @@ class AppComponent extends Component
     public function setClinics()
     {
         $data = \Yii::$app->api->getClinics();
-        if($data && $data['data']) {
-            $this->clinics = $data['data'];
+        if($clinics = ApiHelper::getDataFromApi($data)) {
+            $this->clinics = $clinics;
         }
     }
 
