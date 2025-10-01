@@ -19,49 +19,20 @@
             showInviteScreen: false,
             invitedAppId: null,
             inviteScreenTimeout: 5000,
-            invite: {                                           // инфа по приглашению audio
+            invite: {
                 fullMessage: null,
                 messageTop: null,
                 messageBottom: null,
                 audio: null
             },
 
-            roomInfo: null,                                     // объект - инфа по комнате
-            roomSequence: null,                                 // массив визитов
+            roomInfo: null,
+            roomSequence: null,
             busySequence: null,
             waitSequence: null,
 
             socketUrl: '<?= \Yii::$app->settings->getParam('socket_url') ?>',
             socketConn: null,
-
-            // roomInfo: {
-            //      name: 'Кабинет офтальмолога',
-            //      avatar: 'https://files.rnova.org/198733bd446bb513a3bfe91ae1f3d391/2f3988fbcf0519ea27fdcefaf0d1772d.png',
-            //      professionsText: 'Врач высшей категории',
-            // },
-            // roomSequence: [
-            //     {
-            //         id: 1111,
-            //         status_id: 4,
-            //         time_start: '15:00',
-            //         patientNumber: '555',
-            //         ticketCode: 'Л001',
-            //     },
-            //     {
-            //         id: 2222,
-            //         status_id: 3,
-            //         time_start: '15:30',
-            //         patientNumber: '444',
-            //         ticketCode: 'Л002',
-            //     },
-            //     {
-            //         id: 5555,
-            //         status_id: 4,
-            //         time_start: '16:00',
-            //         patientNumber: '333',
-            //         ticketCode: 'Л003',
-            //     },
-            // ],
 
             /**
              INIT
@@ -89,10 +60,9 @@
                 };
                 this.socketConn.onclose = function (e) {
                     data.closeConnection();
-                    console.log('close')
                 };
                 this.socketConn.onerror = function (e) {
-                    console.log('error')
+
                 };
                 this.socketConn.onmessage = function (e) {
                     data.handleMessage(e.data);
@@ -142,36 +112,13 @@
                 this.appointment = data;
                 callback();
                 return;
-
-                let app = this.appointment;
-                let roomSeq = this.roomSequence;
-                // проверить, есть ли такой визит, если нет, то добавить
-                    // если есть, то проверить статус. Если контролируемый, то поменять, если нет, то убрать его из roomSequence
-                let room = this.roomSequence ? this.roomSequence.filter((item) => item.id == app.id) : null;
-                if(!room.length && (app.status_id == 2 || app.status_id == 3)) {
-                    roomSeq.push(room)
-                }
-                let total = roomSeq ? roomSeq.filter((item) => (item.status_id == 2 || item.status_id ==3)) : null;
-                this.roomSequence = total;
-
-                // let room = roomSeq.map(seqApp => {
-                //     if(seqApp.id === app.id) {
-                //         seqApp.status_id = app.status_id;
-                //     }
-                //     return seqApp;
-                // });
-                this.setSequences();
-                callback()
             },
-            // clearAppointment() {
-            //     this.appointment = null;
-            // },
             handleUpdate() {
                 this.setDefault();
             },
             handleNotification() {
                 this.setDefault();
-                this.inviteScreen();
+                //this.inviteScreen();
             },
 
             /**
