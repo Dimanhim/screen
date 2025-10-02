@@ -192,7 +192,7 @@
                 return this.roomStatus === 'wait';
             },
             isEmpty() {
-                return this.roomStatus === 'empty';
+                return this.roomStatus === 'empty' || this.roomStatus === 'free';
             },
             hasBusy() {
                 if(!this.roomSequence) return false;
@@ -212,7 +212,7 @@
                         footerText = 'Кабинет свободен';
                         break;
                     case 'wait':
-                        footerText = 'Ожидайте вызова';
+                        footerText = 'Кабинет свободен';
                         break;
                     case 'busy':
                         footerText = 'Идёт приём';
@@ -266,7 +266,7 @@
                 return this.screen === 'no-schedule' && !this.showInviteScreen;
             },
             isScreenRoomInfo() {
-                return this.screen === 'room-info' && !this.showInviteScreen;
+                return this.screen === 'room-info' && this.roomInfo !== null && !this.showInviteScreen;
             },
             getAppointmentStatusText(status_id) {
                 return status_id === 3 ? 'На приёме' : 'Ожидает';

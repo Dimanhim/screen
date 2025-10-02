@@ -13,7 +13,7 @@ class FrontAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
 
-    private $directoryPath = 'screens';
+    private $directoryPath = 'alfa';
     private $cssDir;
     private $jsDir;
 
@@ -45,7 +45,7 @@ class FrontAsset extends AssetBundle
     public function getCss()
     {
         return [
-            '/'.$this->directoryPath.'/css/main.css?v='.mt_rand(1000,10000),
+            '/'.$this->directoryPath.'/css/style.css',
         ];
     }
 
