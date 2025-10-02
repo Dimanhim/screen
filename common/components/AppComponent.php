@@ -251,7 +251,7 @@ class AppComponent extends Component
 
         $data = [
             'method' => $method,
-            'data' => $this->apiData
+            'data' => $this->getScreenAppointments($this->apiData['roomId'], $this->apiData['doctor_id']),
         ];
 
         return SocketHandler::sendMessage(json_encode($data));

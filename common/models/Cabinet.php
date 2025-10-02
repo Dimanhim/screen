@@ -199,7 +199,9 @@ class Cabinet extends BaseModel
     {
         $str = '<div class="tooltip-view-links">';
         $str .= '<div>'.Html::a('Кабинет врача', $this->getRoomUrl('regular'), ['target' => '_blanc']).'</div>';
-        $str .= '<div>'.Html::a('Очередь талонов', $this->getRoomUrl('tickets'), ['target' => '_blanc']).'</div>';
+        if($this->show_tickets) {
+            $str .= '<div>'.Html::a('Очередь талонов', $this->getRoomUrl('tickets'), ['target' => '_blanc']).'</div>';
+        }
         $str .= '</div>';
         return $str;
     }

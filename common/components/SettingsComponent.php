@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use common\models\Cabinet;
 use common\models\Setting;
 use yii\base\Component;
 
@@ -42,5 +43,13 @@ class SettingsComponent extends Component
         if(!$paramName) return null;
 
         return $this->data[$paramName] ?? null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTicketShows()
+    {
+        return !!Cabinet::findModels()->andWhere(['show_tickets' => 1])->all();
     }
 }

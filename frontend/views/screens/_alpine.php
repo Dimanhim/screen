@@ -72,9 +72,7 @@
             },
             setDefault() {
                 this.getRoomInfo(() => {
-                    this.getAppointments(() => {
-                        this.setRoomScreen();
-                    })
+                    this.getAppointments(() => {})
                 })
             },
 
@@ -118,14 +116,10 @@
                     case 'register':
                         break;
                     case 'update':
-                        this.setAppointment(data.data, () => {
-                            app.handleUpdate();
-                        })
+                        app.handleUpdate(data.data);
                         break;
                     case 'notification':
-                        this.setAppointment(data.data, () => {
-                            app.handleNotification();
-                        })
+                        app.handleNotification(data.data);
                         break;
                 }
                 return true;
@@ -152,40 +146,45 @@
                     roomSeq.push(room)
                 }
                 let total = roomSeq ? roomSeq.filter((item) => (item.status_id == 2 || item.status_id ==3)) : null;
-                this.roomSequence = total;
-
-                // let room = roomSeq.map(seqApp => {
-                //     if(seqApp.id === app.id) {
-                //         seqApp.status_id = app.status_id;
-                //     }
-                //     return seqApp;
-                // });
+                this.setAppointments(total, () => {
+                    callback()
+                })
+            },
+            setAppointments(data, callback) {
+                this.roomSequence = data;
                 this.setSequences();
-                callback()
+                this.setRoomScreen();
+                callback();
             },
             // clearAppointment() {
             //     this.appointment = null;
             // },
-            handleUpdate() {
-                this.setDefault();
+            handleUpdate(data) {
+                this.setAppointments(data, () => {})
             },
-            handleNotification() {
-                this.setDefault();
-                this.inviteScreen();
+            handleNotification(data) {
+                this.setAppointments(data, () => {
+                    this.inviteScreen();
+                })
             },
 
             /**
              API
              * */
             getAppointments(callback) {
+                if(!this.roomInfo || !this.roomId) {
+                    callback();
+                    return;
+                }
                 const params = new URLSearchParams();
                 params.set('roomId', this.roomId);
                 params.set('doctorId', this.roomInfo.id);
                 const response = this.loadData('/api/get-appointments', params)
                 response.then((data) => {
-                    this.roomSequence = data;
-                    this.setSequences();
-                    callback();
+                    this.setAppointments(data, () => {
+                        callback();
+                    })
+
                 })
             },
             getRoomInfo(callback) {

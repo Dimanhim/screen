@@ -66,7 +66,7 @@ AppAsset::register($this);
     if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_CABINET, null, null, true) or User::isAdmin()) {
         $menuItems[] = ['label' => 'Кабинеты', 'url' => ['/cabinet/index']];
     }
-    if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_TICKETS, null, null, true) or User::isAdmin()) {
+    if((Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_TICKETS, null, null, true) or User::isAdmin()) && Yii::$app->settings->isTicketShows() ) {
         $menuItems[] = ['label' => 'Талоны', 'url' => ['/ticket/index']];
     }
     if(Yii::$app->accesses->hasAccess(AccessesComponent::TYPE_SETTINGS, null, null, true) or User::isAdmin()) {
