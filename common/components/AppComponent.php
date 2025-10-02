@@ -237,9 +237,7 @@ class AppComponent extends Component
         $this->prepareAppointments();
         $this->apiData = $this->preparedAppointments[0] ?? null;
 
-        if(!$this->apiData) return false;
-
-        if(!$roomId) return false;
+        if(!$this->apiData || !$roomId) return false;
 
         $this->apiData['roomId'] = $roomId;
 
@@ -251,7 +249,7 @@ class AppComponent extends Component
 
         $data = [
             'method' => $method,
-            'data' => $this->getScreenAppointments($this->apiData['roomId'], $this->apiData['doctor_id']),
+            'data' => $this->apiData
         ];
 
         return SocketHandler::sendMessage(json_encode($data));

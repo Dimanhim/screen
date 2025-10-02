@@ -112,16 +112,19 @@
                     return false;
                 }
                 let app = this;
-                switch (method) {
-                    case 'register':
-                        break;
-                    case 'update':
-                        app.handleUpdate(data.data);
-                        break;
-                    case 'notification':
-                        app.handleNotification(data.data);
-                        break;
-                }
+                this.setAppointment(data.data, () => {
+                    switch (method) {
+                        case 'register':
+                            break;
+                        case 'update':
+                            app.handleUpdate();
+                            break;
+                        case 'notification':
+                            app.handleNotification();
+                            break;
+                    }
+                })
+
                 return true;
             },
             send(method, data) {
@@ -136,19 +139,6 @@
                 this.appointment = data;
                 callback();
                 return;
-
-                let app = this.appointment;
-                let roomSeq = this.roomSequence;
-                // проверить, есть ли такой визит, если нет, то добавить
-                    // если есть, то проверить статус. Если контролируемый, то поменять, если нет, то убрать его из roomSequence
-                let room = this.roomSequence ? this.roomSequence.filter((item) => item.id == app.id) : null;
-                if(!room.length && (app.status_id == 2 || app.status_id == 3)) {
-                    roomSeq.push(room)
-                }
-                let total = roomSeq ? roomSeq.filter((item) => (item.status_id == 2 || item.status_id ==3)) : null;
-                this.setAppointments(total, () => {
-                    callback()
-                })
             },
             setAppointments(data, callback) {
                 this.roomSequence = data;
@@ -156,16 +146,12 @@
                 this.setRoomScreen();
                 callback();
             },
-            // clearAppointment() {
-            //     this.appointment = null;
-            // },
-            handleUpdate(data) {
-                this.setAppointments(data, () => {})
+            handleUpdate() {
+                this.setDefault();
             },
-            handleNotification(data) {
-                this.setAppointments(data, () => {
-                    this.inviteScreen();
-                })
+            handleNotification() {
+                this.setDefault();
+                this.inviteScreen();
             },
 
             /**
