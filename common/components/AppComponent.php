@@ -237,9 +237,7 @@ class AppComponent extends Component
         $this->prepareAppointments();
         $this->apiData = $this->preparedAppointments[0] ?? null;
 
-        if(!$this->apiData) return false;
-
-        if(!$roomId) return false;
+        if(!$this->apiData || !$roomId) return false;
 
         $this->apiData['roomId'] = $roomId;
 

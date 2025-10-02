@@ -43,9 +43,7 @@
             },
             setDefault() {
                 this.getRoomInfo(() => {
-                    this.getAppointments(() => {
-                        this.setRoomScreen();
-                    })
+                    this.getAppointments(() => {})
                 })
             },
 
@@ -60,9 +58,10 @@
                 };
                 this.socketConn.onclose = function (e) {
                     data.closeConnection();
+                    console.log('close')
                 };
                 this.socketConn.onerror = function (e) {
-
+                    console.log('error')
                 };
                 this.socketConn.onmessage = function (e) {
                     data.handleMessage(e.data);
@@ -84,20 +83,19 @@
                     return false;
                 }
                 let app = this;
-                switch (method) {
-                    case 'register':
-                        break;
-                    case 'update':
-                        this.setAppointment(data.data, () => {
+                this.setAppointment(data.data, () => {
+                    switch (method) {
+                        case 'register':
+                            break;
+                        case 'update':
                             app.handleUpdate();
-                        })
-                        break;
-                    case 'notification':
-                        this.setAppointment(data.data, () => {
+                            break;
+                        case 'notification':
                             app.handleNotification();
-                        })
-                        break;
-                }
+                            break;
+                    }
+                })
+
                 return true;
             },
             send(method, data) {
@@ -113,6 +111,12 @@
                 callback();
                 return;
             },
+            setAppointments(data, callback) {
+                this.roomSequence = data;
+                this.setSequences();
+                this.setRoomScreen();
+                callback();
+            },
             handleUpdate() {
                 this.setDefault();
             },
@@ -125,14 +129,19 @@
              API
              * */
             getAppointments(callback) {
+                if(!this.roomInfo || !this.roomId) {
+                    callback();
+                    return;
+                }
                 const params = new URLSearchParams();
                 params.set('roomId', this.roomId);
                 params.set('doctorId', this.roomInfo.id);
                 const response = this.loadData('/api/get-appointments', params)
                 response.then((data) => {
-                    this.roomSequence = data;
-                    this.setSequences();
-                    callback();
+                    this.setAppointments(data, () => {
+                        callback();
+                    })
+
                 })
             },
             getRoomInfo(callback) {

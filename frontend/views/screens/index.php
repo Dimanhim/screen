@@ -1,4 +1,5 @@
 <?php
+    $this->title = Yii::$app->settings->getParam('app_name');
     $showed = [
         'main-footer',
         'room-info',
