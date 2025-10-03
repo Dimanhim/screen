@@ -5,9 +5,6 @@ use yii\grid\GridView;
 use himiklab\sortablegrid\SortableGridView;
 use common\models\Building;
 
-//use Da\QrCode\QrCode;
-$this->registerJsFile('/js/QRCreator.js', ['position' => \yii\web\View::POS_HEAD]);
-
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\CabinetSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -16,7 +13,6 @@ $this->title = 'Кабинеты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cabinet-index">
-    <div id="qrcode"></div>
     <div class="card">
         <div class="card-header">
             <h1><?= Html::encode($this->title) ?></h1>
@@ -95,6 +91,3 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
-<script>
-    //document.getElementById('qrcode').append(QRCreator('Привет, Мир!').result);
-</script>

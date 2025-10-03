@@ -8,6 +8,6 @@ class InfoLog extends Component
 {
     public static function add($name = '', $value, $fileName = 'info-log.txt')
     {
-        file_put_contents('/var/www/docscreen.rnova.org/'.$fileName, date('d.m.Y H:i:s').' '.$name.' - '.print_r($value, true)."\n", FILE_APPEND);
+        file_put_contents('/var/www/alfa-docscreen.rnova.org/'.$fileName, date('d.m.Y H:i:s').' '.$name.' - '.print_r($value, true)."\n", FILE_APPEND);
     }
 }

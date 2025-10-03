@@ -1,9 +1,12 @@
 <?php
-    $this->title = Yii::$app->settings->getParam('app_name');
-    $showed = [
-        'main-footer',
-        'room-info',
-    ];
+$this->registerJsFile('/js/QRCreator.js', ['position' => \yii\web\View::POS_HEAD]);
+
+$this->title = Yii::$app->settings->getParam('app_name');
+
+$showed = [
+    'main-footer',
+    'room-info',
+];
 ?>
 <div data-template x-data="screens" x-init="initDefault">
     <div class="screen">

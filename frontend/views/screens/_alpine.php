@@ -157,8 +157,17 @@
                 const response = this.loadData('/api/get-room', params)
                 response.then((data) => {
                     this.roomInfo = data;
+                    this.setQrLink();
                     callback();
                 })
+            },
+            setQrLink() {
+                if(this.roomInfo) {
+                    let text = this.userUrl + this.roomInfo.id;
+                    document.getElementById('qrcode').append(QRCreator(text, {
+                        modsize: 4
+                    }).result);
+                }
             },
             async loadData(url, params) {
                 const response = await fetch(url, {

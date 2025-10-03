@@ -291,6 +291,7 @@ class AppComponent extends Component
 
         if(!$this->patientIds) return false;
 
+        sleep(1);
         $request = Yii::$app->api->getPatient(['id' => implode(',', $this->patientIds)]);
         $patientData = ApiHelper::getDataFromApi($request);
 
