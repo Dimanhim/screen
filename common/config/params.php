@@ -7,4 +7,5 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength' => 8,
     //'socket' => ['port' => 10001, 'host' => '127.0.0.1', 'url' => 'wss://docscreen.rnova.org/ws/']
+    'user_url' => 'https://medcentralfa.ru/rnova-doctor?id=',
 ];

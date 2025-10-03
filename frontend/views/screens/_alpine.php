@@ -1,6 +1,9 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('screens', () => ({
+            userUrl: '<?= Yii::$app->params['user_url'] ?>',
+            qrLink: null,
+
             roomId: '<?= $roomId ?>',
             mode: '<?= $mode ?>',
             roomNumber: '<?= $roomNumber ?>',
