@@ -97,9 +97,9 @@ class RnovaApi
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => $build_query,
             CURLOPT_HTTPHEADER => array(
-                'Authorization: Basic a3V0c2FldmEuZGFyaWFfYXBpMS5nbWFpbC5jb206Rk03WDJGOVJTWFRFV0w3NQ==',
+                //'Authorization: Basic a3V0c2FldmEuZGFyaWFfYXBpMS5nbWFpbC5jb206Rk03WDJGOVJTWFRFV0w3NQ==',
                 'Content-Type: application/x-www-form-urlencoded',
-                'Cookie: PHPSESSID=eglk0r28e3ccle8gg03ob9igs2'
+                //'Cookie: PHPSESSID=eglk0r28e3ccle8gg03ob9igs2'
             ),
         ));
 

@@ -34,7 +34,7 @@ class Api
         if($statuses) {
             $params = array_merge($params, ['status_id' => $statuses]);
         }
-        $request = $this->api->getRequest('getAppointments', $params);
+        $request = $this->api->getRequest('v2/getAppointments', $params);
         return $this->handleRequest($request);
     }
 

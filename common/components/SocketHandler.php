@@ -69,7 +69,7 @@ class SocketHandler extends Component implements MessageComponentInterface
         $methods = ['register', 'update', 'notification'];
         if(!in_array($method, $methods)) return null;
 
-        return json_encode([
+        return @json_encode([
             'method' => $method,
             'data' => $message,
         ]);
@@ -81,7 +81,9 @@ class SocketHandler extends Component implements MessageComponentInterface
     {
         if(!isset($data['roomId'])) return false;
 
-        self::$clients[$data['roomId']] = $client;
+        self::$clients[$data['roomId']][] = $client;
+
+        $client->send($this->getMessage('register', ['resourceId', $client->resourceId]));
 
     }
 
@@ -89,28 +91,34 @@ class SocketHandler extends Component implements MessageComponentInterface
     {
         $roomId = $data['roomId'] ?? null;
 
-        $client = self::$clients[$roomId] ?? null;
+        $clients = self::$clients[$roomId] ?? null;
 
-        if(!$client) return false;
+        if(!$clients) return false;
 
-        $client->send($this->getMessage('update', $data));
+        foreach($clients as $client) {
+            $client->send($this->getMessage('update', $data));
+            sleep(2);
+        }
     }
 
     private function inviteScreen($data)
     {
         $roomId = $data['roomId'] ?? null;
 
-        $client = self::$clients[$roomId] ?? null;
+        $clients = self::$clients[$roomId] ?? null;
 
-        if(!$client) return false;
+        if(!$clients) return false;
 
-        $client->send($this->getMessage('notification', $data));
+        foreach($clients as $client) {
+            $client->send($this->getMessage('notification', $data));
+            sleep(1);
+        }
     }
 
     public static function sendMessage($message)
     {
         if (!is_string($message)) {
-            $message = json_encode($message);
+            $message = @json_encode($message);
         }
         try {
             $client = new Client(
