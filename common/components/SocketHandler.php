@@ -95,9 +95,11 @@ class SocketHandler extends Component implements MessageComponentInterface
 
         if(!$clients) return false;
 
+        $message = $this->getMessage('update', $data);
+
         foreach($clients as $client) {
-            $client->send($this->getMessage('update', $data));
-            sleep(2);
+            $client->send($message);
+            //sleep(2);
         }
     }
 
@@ -109,9 +111,11 @@ class SocketHandler extends Component implements MessageComponentInterface
 
         if(!$clients) return false;
 
+        $message = $this->getMessage('notification', $data);
+
         foreach($clients as $client) {
-            $client->send($this->getMessage('notification', $data));
-            sleep(1);
+            $client->send($message);
+            //sleep(1);
         }
     }
 

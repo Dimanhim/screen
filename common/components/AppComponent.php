@@ -141,6 +141,8 @@ class AppComponent extends Component
         $request = Yii::$app->api->getSchedulePeriods($params);
         if($data = ApiHelper::getDataFromApi($request)) {
             foreach($data as $period) {
+                if(!Helpers::isInTimeNow($period['time_start'], $period['time_end'])) continue;
+
                 if($period['room'] == $this->room->mis_id) {
                     if($user = $this->getUserById($period['user_id'])) {
                         $this->user = $user;

@@ -111,4 +111,12 @@ class Helpers
         $url = str_replace('admin-', '', Url::home(true));
         return substr($url, 0, -1);
     }
+
+    public static function isInTimeNow($dateFrom, $dateTo)
+    {
+        $now = time();
+        $from = strtotime($dateFrom);
+        $to = strtotime($dateTo);
+        return $now >= $from && $now <= $to;
+    }
 }

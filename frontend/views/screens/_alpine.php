@@ -112,9 +112,10 @@
                     return false;
                 }
                 let app = this;
-                this.setAppointment(data.data, () => {
+                this.setAppointment(data.data, (data) => {
                     switch (method) {
                         case 'register':
+                            app.registerUser();
                             break;
                         case 'update':
                             app.handleUpdate();
@@ -136,21 +137,86 @@
              SOCKET WEBHOOK
              * */
             setAppointment(data, callback) {
-                this.appointment = data;
-                callback();
-                return;
+                new Promise((resolve, reject) => {
+                    this.appointment = data;
+                    this.appointment.id = parseInt(data.id)
+                    this.appointment.status_id = parseInt(data.status_id)
+                    resolve(data);
+                }).then((data) => {
+                    callback(data);
+                })
             },
             setAppointments(data, callback) {
                 this.roomSequence = data;
-                this.setSequences();
-                this.setRoomScreen();
+                console.log('apps', this.roomSequence)
+                this.setRoomData();
                 callback();
             },
+            setRoomData() {
+                this.setSequences();
+                this.setRoomScreen();
+            },
+            registerUser() {
+                console.log('register')
+                this.appointment = null;
+            },
+            handleAppointment() {
+                let indexApp = null;
+                let countSequence = this.roomSequence ? this.roomSequence.length : 0;
+                let roomSequence = [];
+                const appointment = this.getObject(this.appointment);
+
+                if(this.roomSequence) {
+                    this.roomSequence.forEach(function callback(currentValue, index, array) {
+                        if(currentValue.id == appointment.id) {
+                            indexApp = index
+                        }
+                    })
+                    if(indexApp !== null) {
+                        this.roomSequence[indexApp].status_id = appointment.status_id;
+                    }
+                    else {
+                        this.roomSequence[countSequence] = appointment;
+                    }
+                }
+                else {
+                    roomSequence.push(appointment)
+                    this.roomSequence = roomSequence;
+                }
+
+                this.prepareRoomSequence((data) => {
+                    this.roomSequence = data
+                    this.setRoomData();
+                });
+            },
+            prepareRoomSequence(callback) {
+                new Promise((resolve, reject) => {
+                    let roomSequence = [];
+                    this.roomSequence.forEach((item) => {
+                        let obj = this.getObject(item);
+                        if(obj.status_id == 2 || obj.status_id == 3) {
+                            roomSequence.push(obj);
+                        }
+                    })
+                    if(roomSequence.length) {
+                        resolve(roomSequence);
+                    }
+
+                }).then((data) => {
+                    callback(data);
+                }).catch((e) => {
+                    console.log('Ошибка prepareRoomSequence')
+                })
+
+                // callback()
+            },
             handleUpdate() {
-                this.setDefault();
+                this.handleAppointment();
+                //this.setDefault();
             },
             handleNotification() {
-                this.setDefault();
+                this.handleAppointment();
+                //this.setDefault();
                 this.inviteScreen();
             },
 
@@ -172,6 +238,14 @@
                     })
 
                 })
+            },
+            getObject(proxy) {
+                if(!proxy) return;
+                let obj = {};
+                for (let key in proxy) {
+                    obj[key] = proxy[key];
+                }
+                return obj;
             },
             getRoomInfo(callback) {
                 if(this.roomInfo) {
@@ -287,7 +361,7 @@
                     this.invite.messageTop = 'На прием в кабинет ' + this.roomNumber + ' приглашается '
                     this.invite.messageBottom = this.appointment.patient_short_name;
                 }
-                else if(this.mode == 'tickets') {
+                else if(this.mode == 'ticket') {
                     this.invite.messageTop = 'На прием в кабинет ' + this.roomNumber + ' приглашается '
                     this.invite.messageBottom = 'Пациент с талоном ' + this.appointment.ticketCode;
                 }
