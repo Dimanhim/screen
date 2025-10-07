@@ -2,9 +2,6 @@
 
 namespace common\components;
 
-use console\controllers\SocketController;
-use Yii;
-use common\models\Cabinet;
 use Exception;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
@@ -38,7 +35,6 @@ class SocketHandler extends Component implements MessageComponentInterface
 
     private function handleMessage($message, $client)
     {
-
         $data = @json_decode($message, true);
         if (!$data || !isset($data['method'])) {
             return false;
@@ -99,7 +95,6 @@ class SocketHandler extends Component implements MessageComponentInterface
 
         foreach($clients as $client) {
             $client->send($message);
-            //sleep(2);
         }
     }
 
@@ -115,7 +110,6 @@ class SocketHandler extends Component implements MessageComponentInterface
 
         foreach($clients as $client) {
             $client->send($message);
-            //sleep(1);
         }
     }
 

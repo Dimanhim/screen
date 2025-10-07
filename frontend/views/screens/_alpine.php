@@ -19,49 +19,20 @@
             showInviteScreen: false,
             invitedAppId: null,
             inviteScreenTimeout: 5000,
-            invite: {                                           // инфа по приглашению audio
+            invite: {
                 fullMessage: null,
                 messageTop: null,
                 messageBottom: null,
                 audio: null
             },
 
-            roomInfo: null,                                     // объект - инфа по комнате
-            roomSequence: null,                                 // массив визитов
+            roomInfo: null,
+            roomSequence: null,
             busySequence: null,
             waitSequence: null,
 
             socketUrl: '<?= \Yii::$app->settings->getParam('socket_url') ?>',
             socketConn: null,
-
-            // roomInfo: {
-            //      name: 'Кабинет офтальмолога',
-            //      avatar: 'https://files.rnova.org/198733bd446bb513a3bfe91ae1f3d391/2f3988fbcf0519ea27fdcefaf0d1772d.png',
-            //      professionsText: 'Врач высшей категории',
-            // },
-            // roomSequence: [
-            //     {
-            //         id: 1111,
-            //         status_id: 4,
-            //         time_start: '15:00',
-            //         patientNumber: '555',
-            //         ticketCode: 'Л001',
-            //     },
-            //     {
-            //         id: 2222,
-            //         status_id: 3,
-            //         time_start: '15:30',
-            //         patientNumber: '444',
-            //         ticketCode: 'Л002',
-            //     },
-            //     {
-            //         id: 5555,
-            //         status_id: 4,
-            //         time_start: '16:00',
-            //         patientNumber: '333',
-            //         ticketCode: 'Л003',
-            //     },
-            // ],
 
             /**
              INIT
@@ -148,7 +119,6 @@
             },
             setAppointments(data, callback) {
                 this.roomSequence = data;
-                console.log('apps', this.roomSequence)
                 this.setRoomData();
                 callback();
             },
@@ -157,7 +127,6 @@
                 this.setRoomScreen();
             },
             registerUser() {
-                console.log('register')
                 this.appointment = null;
             },
             handleAppointment() {
@@ -201,22 +170,17 @@
                     if(roomSequence.length) {
                         resolve(roomSequence);
                     }
-
                 }).then((data) => {
                     callback(data);
                 }).catch((e) => {
                     console.log('Ошибка prepareRoomSequence')
                 })
-
-                // callback()
             },
             handleUpdate() {
                 this.handleAppointment();
-                //this.setDefault();
             },
             handleNotification() {
                 this.handleAppointment();
-                //this.setDefault();
                 this.inviteScreen();
             },
 
@@ -236,7 +200,6 @@
                     this.setAppointments(data, () => {
                         callback();
                     })
-
                 })
             },
             getObject(proxy) {
