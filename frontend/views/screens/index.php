@@ -37,6 +37,12 @@ $showed = [
     </div>
 </div>
 
+<style>
+    .screen__content {
+        min-height: calc(100% - 180px)
+    }
+</style>
+
 
 
 

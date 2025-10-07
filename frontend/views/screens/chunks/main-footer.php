@@ -1,8 +1,6 @@
 <template x-if="!showInviteScreen">
     <div class="screen__header">
-        <template x-if="roomInfo">
-            <div class="screen__header-number" x-text="roomInfo.number"></div>
-        </template>
+        <div class="screen__header-number" x-text="roomNumber"></div>
 
         <div class="screen__header-status">
             <span x-html="footerText"></span>
