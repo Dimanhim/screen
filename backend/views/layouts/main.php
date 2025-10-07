@@ -103,7 +103,7 @@ AppAsset::register($this);
 
 <footer class="footer mt-auto py-3 text-muted">
     <div class="container container-footer">
-        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
+        <p class="float-start">&copy; <?= Html::encode(Yii::$app->settings->getParam('app_name')) ?> <?= date('Y') ?></p>
     </div>
 </footer>
 
