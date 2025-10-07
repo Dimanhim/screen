@@ -17,7 +17,7 @@ class ApiBaseController extends Controller
         'error' => 0,
         'data' => [],
     ];
-    protected $allowedActions = ['get-room', 'get-appointments'];
+    protected $allowedActions = ['get-room', 'get-appointments', 'get-user-url'];
 
     /**
      * @param $action

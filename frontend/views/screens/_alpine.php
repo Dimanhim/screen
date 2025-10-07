@@ -164,10 +164,21 @@
             setQrLink() {
                 if(this.roomInfo) {
                     let text = this.userUrl + this.roomInfo.id;
-                    document.getElementById('qrcode').append(QRCreator(text, {
-                        modsize: 4
-                    }).result);
+
+                    this.getContentFromUrl(text, (link) => {
+                        document.getElementById('qrcode').append(QRCreator(link, {
+                            modsize: 4
+                        }).result);
+                    })
                 }
+            },
+            getContentFromUrl(url, callback) {
+                const params = new URLSearchParams();
+                params.set('url', url);
+                const response = this.loadData('/api/get-user-url', params)
+                response.then((data) => {
+                    callback(data);
+                })
             },
             async loadData(url, params) {
                 const response = await fetch(url, {

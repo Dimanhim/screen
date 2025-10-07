@@ -73,6 +73,18 @@ class ApiController extends ApiBaseController
         return $this->response($data);
     }
 
+    public function actionGetUserUrl()
+    {
+        $url = '';
+        $tempUrl = \Yii::$app->request->post('url');
+        $pageFullContent = file_get_contents($tempUrl);
+        $sym = explode('html', $pageFullContent);
+        if(count($sym) >= 1) {
+            $url = $sym[0].'html';
+        }
+        return $this->response($url);
+    }
+
 
 
 
