@@ -41,6 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => ActionColumn::className(),
                         'template' => '{update} {delete}',
                         'urlCreator' => function ($action, User $model, $key, $index, $column) {
+                            if($action == 'delete' && $model->is_admin) return null;
                             return Url::toRoute([$action, 'id' => $model->id]);
                         }
                     ],

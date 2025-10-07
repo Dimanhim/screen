@@ -34,7 +34,7 @@ class UserController extends BaseController
     public function actionIndex()
     {
         $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider = $searchModel->search($this->request->queryParams, User::isAdmin());
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -99,5 +99,16 @@ class UserController extends BaseController
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+        if($model->is_admin) return $this->redirect(Yii::$app->request->referrer);
+        $model->deleted = 1;
+        if($model->save()) {
+            Yii::$app->session->setFlash('success', 'Запись удалена успешно');
+        }
+        return $this->redirect(Yii::$app->request->referrer);
     }
 }

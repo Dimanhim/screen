@@ -70,7 +70,9 @@ class BaseModel extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-        Yii::$app->session->setFlash('success', 'Изменения успешно сохранены');
+        if(Yii::$app->controller->id != 'cabinet') {
+            Yii::$app->session->setFlash('success', 'Изменения успешно сохранены');
+        }
         return parent::afterSave($insert, $changedAttributes);
     }
 

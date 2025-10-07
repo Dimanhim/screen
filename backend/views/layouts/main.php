@@ -37,7 +37,7 @@ AppAsset::register($this);
             <p class="header-company-text-service">Сервис экранов</p>
         </div>
         <div class="header-company-text">
-            <p class="header-company-text-name"><?= Yii::$app->name ?></p>
+            <p class="header-company-text-name"><?= Yii::$app->settings->getParam('app_name') ?></p>
         </div>
         <div class="header-company-text header-company-logout">
             <a href="/site/logout" style="padding: 4px 10px;">

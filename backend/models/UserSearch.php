@@ -37,9 +37,14 @@ class UserSearch extends User
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $isAdmin = false)
     {
-        $query = User::find()->where(['is_active' => 1, 'deleted' => null])->orderBy(['position' => SORT_ASC]);
+        if($isAdmin) {
+            $query = User::find()->where(['is_active' => 1, 'deleted' => null])->orderBy(['position' => SORT_ASC]);
+        }
+        else {
+            $query = User::find()->where(['is_active' => 1, 'deleted' => null])->andWhere(['not', ['is_admin' => 1]])->orderBy(['position' => SORT_ASC]);
+        }
 
         // add conditions that should always apply here
 
